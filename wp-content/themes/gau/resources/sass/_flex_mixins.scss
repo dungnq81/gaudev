@@ -1,0 +1,215 @@
+@use "sass:list";
+@use "sass:math";
+
+@import "mixins";
+
+@mixin flex-self( $total: 1, $n: 1, $gap: false ) {
+    @if type-of($gap) == bool or $gap < 0 {
+        $gap: 0;
+    }
+    @if is-int($total) and is-int($n) and $n > 0 {
+        @if $total == $n {
+            width: percentage(1);
+        } @else if $total > $n {
+            width: subtract(percentage(divide($n, $total)), fs(($total - $n) * divide($gap, $total)));
+        }
+    }
+}
+
+@mixin flex-basis( $n: 1, $gap: false ) {
+    @include flex-self($grid-columns, $n, $gap);
+}
+
+@mixin media-flex-basis(
+    $m: 1,
+    $t: false,
+    $d: false,
+    $gap_m: false,
+    $gap: false
+) {
+    flex: 0 0 auto;
+
+    @if is-int($m) and $m > 0 {
+        @include flex-basis($m, $gap_m);
+    }
+    @if is-int($t) and $t > 0 {
+        @include mq-min(tablet) {
+            @include flex-basis($t, $gap);
+        }
+    }
+    @if is-int($d) and $d > 0 {
+        @include mq-min(desktop) {
+            @include flex-basis($d, $gap);
+        }
+    }
+}
+
+@mixin media-flex-self(
+    $m: 1,
+    $t: false,
+    $d: false,
+    $gap_m: false,
+    $gap: false
+) {
+    @if is-int($m) and $m > 0 {
+        @include flex-self($m, 1, $gap_m);
+    }
+    @if is-int($t) and $t > 0 {
+        @include mq-min(tablet) {
+            @include flex-self($t, 1, $gap);
+        }
+    }
+    @if is-int($d) and $d > 0 {
+        @include mq-min(desktop) {
+            @include flex-self($d, 1, $gap);
+        }
+    }
+}
+
+@mixin flex-layout-auto(
+    $gap_m: false,
+    $gap: false,
+    $min_width: 0,
+    $max_width: 100%,
+    $class_cell: '.cell'
+) {
+    @include flex-x(true);
+    @include media-gap($gap_m, $gap, false);
+
+    & > #{unquote($class_cell)} {
+        min-width: $min_width;
+        max-width: $max_width;
+        @include flex-auto;
+    }
+}
+
+@mixin flex-layout(
+    $m: 1,
+    $t: false,
+    $d: false,
+    $gap_m: false,
+    $gap: false,
+    $class_cell: '.cell'
+) {
+    @include flex-x(true);
+    @include media-gap($gap_m, $gap, false);
+
+    & > #{unquote($class_cell)} {
+        @if '.cell' != $class_cell {
+            @include cell(false);
+        }
+
+        @include media-flex-self($m, $t, $d, $gap_m, $gap);
+    }
+}
+
+@mixin flex-shrink {
+    flex: 0 0 auto;
+    max-width: 100%;
+    min-height: 0;
+    min-width: 0;
+}
+
+@mixin flex-auto {
+    flex: 1 1 0;
+    width: auto;
+}
+
+@mixin flex-stretch {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+@mixin cell( $w: false ) {
+    flex: 0 0 auto;
+    max-width: 100%;
+    min-height: 0;
+    min-width: 0;
+
+    @if type-of($w) != bool {
+        width: fs($w);
+    }
+}
+
+@mixin flex-x($flex: true, $reverse: false) {
+    @if true == $flex {
+        & {
+            display: flex;
+        }
+    }
+
+    @if false == $reverse {
+        & {
+            flex-flow: row wrap;
+        }
+    } @else {
+        & {
+            flex-flow: row-reverse wrap;
+        }
+    }
+}
+
+@mixin flex-y($flex: true, $reverse: false) {
+    @if true == $flex {
+        display: flex;
+    }
+
+    @if false == $reverse {
+        flex-flow: column nowrap;
+    } @else {
+        flex-flow: column-reverse nowrap;
+    }
+}
+
+@mixin flex-padding-x(
+    $padding_m: $gutter-xs,
+    $padding: $gutter,
+    $class_cell: '.cell'
+) {
+    @include mx-gutter($padding_m, $padding);
+
+    & > #{unquote($class_cell)} {
+        @if '.cell' != $class_cell {
+            @include cell();
+        }
+
+        @include px-gutter($padding_m, $padding);
+    }
+}
+
+@mixin flex-padding-y(
+    $padding_m: $gutter-xs,
+    $padding: $gutter,
+    $class_cell: '.cell'
+) {
+    @include my-gutter($padding_m, $padding);
+
+    & > #{unquote($class_cell)} {
+        @if '.cell' != $class_cell {
+            @include cell();
+        }
+
+        @include py-gutter($padding_m, $padding);
+    }
+}
+
+@mixin flex-align-center( $direction_column: false ) {
+    display: flex;
+    align-items: center;
+
+    @if true ==  $direction_column {
+        flex-direction: $direction_column;
+    }
+}
+
+@mixin flex-center() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin inline-flex-center() {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

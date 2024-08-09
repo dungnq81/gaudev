@@ -1,0 +1,179 @@
+@import "functions";
+@import "colors";
+
+//
+// theme color
+//
+$Primary-01: #005EB8;
+$Primary-02: #F4343F;
+$Primary-03: #56C271;
+$Primary-04: #00DEE2;
+
+$Secondary-01: #331f00;
+$Secondary-02: #ec9a20;
+$Secondary-03: #fbead0;
+$Secondary-04: #fefbf6;
+
+$Gray-01: #0a0a0a;
+$Gray-02: #666666;
+$Gray-03: #f0f0f0;
+$Gray-04: #fafafa;
+
+$primary: $Primary-01 !default;
+$secondary: $Secondary-01 !default;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $yellow !default;
+$alert: $red !default;
+$light: $gray-100 !default;
+$dark: $gray-900 !default;
+
+$theme-colors: (
+        "primary": $primary,
+        "secondary": $secondary,
+        "success": $success,
+        "info": $info,
+        "warning": $warning,
+        "alert": $alert,
+        "light": $light,
+        "dark": $dark
+) !default;
+
+// See https://www.w3.org/TR/WCAG20/#visual-audio-contrast-contrast
+
+$min-contrast-ratio: 4.5 !default;
+
+$color-contrast-dark: $black !default;
+$color-contrast-light: $white !default;
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$header-color: #000000 !default;
+$body-color: #000000 !default;
+$body-bg: $white !default;
+$body-size: 16px !default;
+
+// Links
+//
+// Style anchor elements.
+
+$link-color: #000000 !default;
+$link-decoration: underline !default;
+$link-hover-color: shift-color($link-color, 20%) !default;
+$link-hover-decoration: null !default;
+
+// Paragraphs
+//
+// Style p element.
+
+$paragraph-margin-bottom: 15px !default;
+
+// Layout breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+
+$xs: 0 !default;
+$sm: 576px !default;
+$md: 768px !default;
+$lg: 1024px !default;
+$xl: 1280px !default;
+$\2xl: 1400px !default;
+$\3xl: 1880px !default;
+$wp: 782px !default;
+
+$mq-breakpoints: (
+        xs: 0,
+        sm: fs($sm),
+        md: fs($md),
+        lg: fs($lg),
+        xl: fs($xl),
+        2xl: fs($\2xl),
+        3xl: fs($\3xl),
+        mobile: 0,
+        tablet: fs($md),
+        desktop: fs($lg),
+        wp: fs($wp)
+) !default;
+
+// Layout containers
+//
+// Define the maximum width of `.container` for different screen sizes.
+
+$screen-sm: 546px !default;
+$screen-md: 738px !default;
+$screen-lg: 994px !default;
+$screen-xl: 1140px !default;
+$screen-2xl: 1320px !default;
+$screen-3xl: 1680px !default;
+
+$container-max-widths: (
+        sm: fs($screen-sm),
+        md: fs($screen-md),
+        lg: fs($screen-lg),
+        xl: fs($screen-xl),
+        2xl: fs($screen-2xl),
+        3xl: fs($screen-3xl)
+) !default;
+
+// Typography
+//
+// Font, line-height, gutter, and more.
+
+$font-sizes: (
+        h1: 35px,
+        h2: 29px,
+        h3: 25px,
+        h4: 21px,
+        h5: 18px,
+        h6: 16px
+) !default;
+
+$font-sizes-large: (
+        h1: 43px,
+        h2: 35px,
+        h3: 29px,
+        h4: 24px,
+        h5: 20px,
+        h6: 17px
+) !default;
+
+$line-height-global: 1.4 !default;
+$line-height-header: 1.3 !default;
+$line-height-paragraph: 1.5 !default;
+
+$font-weight-lighter: lighter !default;
+$font-weight-light: 300 !default;
+$font-weight-normal: 400 !default;
+$font-weight-medium: 500 !default;
+$font-weight-semibold: 600 !default;
+$font-weight-bold: 700 !default;
+$font-weight-bolder: bolder !default;
+
+// Spacers
+
+$gutter-xs: 10px !default;
+$gutter: 15px !default;
+
+$gap-xs: $gutter-xs * 2;
+$gap: $gutter * 2;
+
+$grid-columns: 12 !default;
+$grid-columns-max: 9 !default;
+
+$spacers: (
+        gutter-xs: fs($gutter-xs),
+        gutter: fs($gutter),
+        gap-xs: fs($gap-xs),
+        gap: fs($gap)
+) !default;
+
+//
+$scrollbar-w: 8px !default;
+$scrollbar-h: 4px !default;
+
+$header-font: 'Noto Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "Ubuntu", Arial, cursive, sans-serif !default;
+$body-font: 'Noto Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "Ubuntu", Arial, cursive, sans-serif !default;
+$awesome-font: "Font Awesome 6 Pro", "Font Awesome 6 Brands", "Font Awesome 6 Free", sans-serif;

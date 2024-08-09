@@ -44,7 +44,7 @@
         "normalize.css": "^8.0.1",
         "pace-js": "^1.2.4",
         "remove-accents": "^0.5.0",
-        "select2": "^4.1.0-rc.0",
+        "select2": "^4.0.3",
         "simplebar": "^6.2.7",
         "swiper": "^11.1.4",
         "vanilla-lazyload": "^19.1.3",
