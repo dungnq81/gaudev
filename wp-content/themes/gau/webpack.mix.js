@@ -23,35 +23,34 @@ const sassFiles = [
     'admin',
 
     // plugin
-    'plugins/swiper',
-    'plugins/woocommerce',
-    'plugins/elementor',
+    //'plugins/swiper',
+    //'plugins/woocommerce',
 
     // site
     'fonts',
     'plugins',
-    'app',
+    //'app',
 ];
 
 // JS
 const jsFiles = [
     // admin
-    'login',
+    //'login',
     'admin',
 
     // plugin
-    'plugins/back-to-top',
-    'plugins/social-share',
-    'plugins/skip-link-focus',
-    'plugins/flex-gap',
-    'plugins/load-scripts',
-    'plugins/passive-events',
-    'plugins/mark',
-    'plugins/swiper',
-    'plugins/woocommerce',
+    // 'plugins/back-to-top',
+    // 'plugins/social-share',
+    // 'plugins/skip-link-focus',
+    // 'plugins/flex-gap',
+    // 'plugins/load-scripts',
+    // 'plugins/passive-events',
+    // 'plugins/mark',
+    // 'plugins/swiper',
+    // 'plugins/woocommerce',
 
     // site
-    'app',
+    //'app',
 ];
 
 //mix.disableNotifications();

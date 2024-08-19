@@ -41,19 +41,22 @@ trait Singleton {
 	 * Implement this method in your child class
 	 * If you want to have actions send at construct
 	 */
-	protected function init(): void {}
+	protected function init(): void {
+	}
 
 	/**
 	 * prevent the instance from being cloned
 	 *
 	 * @return void
 	 */
-	final public function __clone() {}
+	final public function __clone() {
+	}
 
 	/**
 	 * prevent from being unserialized
 	 *
 	 * @return void
 	 */
-	final public function __wakeup() {}
+	final public function __wakeup() {
+	}
 }

@@ -34,7 +34,7 @@ abstract class Abstract_Widget extends WP_Widget {
 		$className              = ( new ReflectionClass( $this ) )->getShortName();
 		$this->widget_classname = str_replace( [
 			'_widget',
-			'-widget'
+			'-widget',
 		], '', Helper::dashCase( strtolower( $className ) ) );
 		$this->widget_id        = $this->prefix . $this->widget_classname;
 
@@ -173,7 +173,7 @@ abstract class Abstract_Widget extends WP_Widget {
 	/**
 	 * @param int $number
 	 */
-	public function _register_one( $number = - 1 ) {
+	public function _register_one( $number = - 1 ): void {
 		parent::_register_one( $number );
 
 		if ( $this->registered ) {
@@ -193,7 +193,7 @@ abstract class Abstract_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function styles_and_scripts(): void {
-        //...
+		//...
 	}
 
 	// --------------------------------------------------
@@ -216,7 +216,7 @@ abstract class Abstract_Widget extends WP_Widget {
 	 *
 	 * @return array
 	 */
-	public function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ): array {
 		$instance = $old_instance;
 
 		if ( empty( $this->settings ) ) {
@@ -272,7 +272,7 @@ abstract class Abstract_Widget extends WP_Widget {
 	 *
 	 * @return void
 	 */
-	public function form( $instance ) {
+	public function form( $instance ): void {
 		if ( empty( $this->settings ) ) {
 			return;
 		}
@@ -286,32 +286,53 @@ abstract class Abstract_Widget extends WP_Widget {
 				case 'text':
 					?>
                     <p>
-                        <label for="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"><?php echo wp_kses_post( $setting['label'] ); ?></label><?php // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
+                        <label for="<?php
+						echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"><?php
+							echo wp_kses_post( $setting['label'] ); ?></label><?php
+						// phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 						?>
-                        <input class="widefat <?php echo Helper::escAttr( $class ); ?>"
-                               id="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
-                               name="<?php echo Helper::escAttr( $this->get_field_name( $key ) ); ?>" type="text"
-                               value="<?php echo Helper::escAttr( $value ); ?>">
-						<?php if ( isset( $setting['desc'] ) ) : ?>
-                            <small class="help-text"><?php echo $setting['desc']; ?></small>
-						<?php endif; ?>
+                        <input class="widefat <?php
+						echo Helper::escAttr( $class ); ?>"
+                               id="<?php
+						       echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
+                               name="<?php
+						       echo Helper::escAttr( $this->get_field_name( $key ) ); ?>" type="text"
+                               value="<?php
+						       echo Helper::escAttr( $value ); ?>">
+						<?php
+						if ( isset( $setting['desc'] ) ) : ?>
+                            <small class="help-text"><?php
+								echo $setting['desc']; ?></small>
+						<?php
+						endif; ?>
                     </p>
 					<?php
 					break;
 
 				case 'number':
 					?>
-                    <p class="<?php echo Helper::escAttr( $class ); ?>">
-                        <label for="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+                    <p class="<?php
+					echo Helper::escAttr( $class ); ?>">
+                        <label for="<?php
+						echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"><?php
+							echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
                         <input class="widefat"
-                               id="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
-                               name="<?php echo Helper::escAttr( $this->get_field_name( $key ) ); ?>" type="number"
-                               min="<?php echo Helper::escAttr( $setting['min'] ); ?>"
-                               max="<?php echo Helper::escAttr( $setting['max'] ); ?>"
-                               value="<?php echo Helper::escAttr( $value ); ?>"/>
-						<?php if ( isset( $setting['desc'] ) ) : ?>
-                            <small class="help-text"><?php echo $setting['desc']; ?></small>
-						<?php endif; ?>
+                               id="<?php
+						       echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
+                               name="<?php
+						       echo Helper::escAttr( $this->get_field_name( $key ) ); ?>" type="number"
+                               min="<?php
+						       echo Helper::escAttr( $setting['min'] ); ?>"
+                               max="<?php
+						       echo Helper::escAttr( $setting['max'] ); ?>"
+                               value="<?php
+						       echo Helper::escAttr( $value ); ?>"/>
+						<?php
+						if ( isset( $setting['desc'] ) ) : ?>
+                            <small class="help-text"><?php
+								echo $setting['desc']; ?></small>
+						<?php
+						endif; ?>
                     </p>
 					<?php
 					break;
@@ -319,17 +340,30 @@ abstract class Abstract_Widget extends WP_Widget {
 				case 'select':
 					?>
                     <p>
-                        <label for="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
-                        <select class="widefat <?php echo Helper::escAttr( $class ); ?>"
-                                id="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
-                                name="<?php echo Helper::escAttr( $this->get_field_name( $key ) ); ?>">
-							<?php foreach ( $setting['options'] as $option_key => $option_value ) : ?>
-                                <option value="<?php echo Helper::escAttr( $option_key ); ?>" <?php selected( $option_key, $value ); ?>><?php echo esc_html( $option_value ); ?></option>
-							<?php endforeach; ?>
+                        <label for="<?php
+						echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"><?php
+							echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+                        <select class="widefat <?php
+						echo Helper::escAttr( $class ); ?>"
+                                id="<?php
+						        echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
+                                name="<?php
+						        echo Helper::escAttr( $this->get_field_name( $key ) ); ?>">
+							<?php
+							foreach ( $setting['options'] as $option_key => $option_value ) : ?>
+                                <option value="<?php
+								echo Helper::escAttr( $option_key ); ?>" <?php
+								selected( $option_key, $value ); ?>><?php
+									echo esc_html( $option_value ); ?></option>
+							<?php
+							endforeach; ?>
                         </select>
-						<?php if ( isset( $setting['desc'] ) ) : ?>
-                            <small class="help-text"><?php echo $setting['desc']; ?></small>
-						<?php endif; ?>
+						<?php
+						if ( isset( $setting['desc'] ) ) : ?>
+                            <small class="help-text"><?php
+								echo $setting['desc']; ?></small>
+						<?php
+						endif; ?>
                     </p>
 					<?php
 					break;
@@ -338,14 +372,23 @@ abstract class Abstract_Widget extends WP_Widget {
 					$rows = ! empty( $setting['rows'] ) ? (int) $setting['rows'] : 3;
 					?>
                     <p>
-                        <label for="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
-                        <textarea class="widefat <?php echo Helper::escAttr( $class ); ?>"
-                                  id="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
-                                  name="<?php echo Helper::escAttr( $this->get_field_name( $key ) ); ?>" cols="20"
-                                  rows="<?= $rows ?>"><?php echo esc_textarea( $value ); ?></textarea>
-						<?php if ( isset( $setting['desc'] ) ) : ?>
-                            <small class="help-text"><?php echo $setting['desc']; ?></small>
-						<?php endif; ?>
+                        <label for="<?php
+						echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"><?php
+							echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></label>
+                        <textarea class="widefat <?php
+						echo Helper::escAttr( $class ); ?>"
+                                  id="<?php
+						          echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
+                                  name="<?php
+						          echo Helper::escAttr( $this->get_field_name( $key ) ); ?>" cols="20"
+                                  rows="<?= $rows ?>"><?php
+							echo esc_textarea( $value ); ?></textarea>
+						<?php
+						if ( isset( $setting['desc'] ) ) : ?>
+                            <small class="help-text"><?php
+								echo $setting['desc']; ?></small>
+						<?php
+						endif; ?>
                     </p>
 					<?php
 					break;
@@ -354,12 +397,17 @@ abstract class Abstract_Widget extends WP_Widget {
 					?>
                     <p>
                         <label>
-                            <input class="hd-checkbox checkbox <?php echo Helper::escAttr( $class ); ?>"
-                                   id="<?php echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
-                                   name="<?php echo Helper::escAttr( $this->get_field_name( $key ) ); ?>"
+                            <input class="hd-checkbox checkbox <?php
+							echo Helper::escAttr( $class ); ?>"
+                                   id="<?php
+							       echo Helper::escAttr( $this->get_field_id( $key ) ); ?>"
+                                   name="<?php
+							       echo Helper::escAttr( $this->get_field_name( $key ) ); ?>"
                                    type="checkbox"
-                                   value="1" <?php checked( $value, 1 ); ?>>
-                            <span class="message"><?php echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></span>
+                                   value="1" <?php
+							checked( $value, 1 ); ?>>
+                            <span class="message"><?php
+								echo $setting['label']; /* phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped */ ?></span>
                         </label>
                     </p>
 					<?php

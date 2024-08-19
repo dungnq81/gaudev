@@ -1,0 +1,22 @@
+{
+	"name": "mu-plugins/mu-gau",
+	"description": "Gaudev mu-plugins",
+	"authors": [
+		{
+			"name": "Gaudev Team"
+		}
+	],
+	"autoload": {
+		"psr-4": {},
+		"exclude-from-classmap": [],
+		"files": []
+	},
+	"require": {
+		"php": ">=7.4",
+		"roots/wp-password-bcrypt": "^1.1.0"
+	}
+	,
+	"require-dev": {
+		"roave/security-advisories": "dev-latest"
+	}
+}

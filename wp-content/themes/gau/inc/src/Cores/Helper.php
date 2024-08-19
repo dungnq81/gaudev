@@ -9,10 +9,39 @@ use Cores\Traits\Wp;
 /**
  * Helper Class
  *
- * @author WEBHD
+ * @author Gaudev
  */
 final class Helper {
 	use Wp;
+
+	// -------------------------------------------------------------
+
+	/**
+	 * @param $name
+	 * @param mixed $default
+	 *
+	 * @return array|mixed
+	 */
+	public static function filterSettingOptions( $name, mixed $default = [] ): mixed {
+		$filters = apply_filters( 'gau_theme_setting_options', [] );
+
+		if ( isset( $filters[ $name ] ) ) {
+			return $filters[ $name ] ?: $default;
+		}
+
+		return [];
+	}
+
+	// -------------------------------------------------------------
+
+	/**
+	 * Get lang code
+	 *
+	 * @return string
+	 */
+	public static function getLang(): string {
+		return strtolower( substr( get_locale(), 0, 2 ) );
+	}
 
 	// --------------------------------------------------
 

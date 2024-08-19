@@ -6,11 +6,10 @@ use Cores\CSS;
 use Cores\Helper;
 use Cores\Traits\Singleton;
 
-use Libs\Login_Security\Login_Security;
+use Admin\Admin;
 
 use Plugins\ACF;
 use Plugins\CF7;
-use Plugins\Elementor;
 use Plugins\PLL;
 use Plugins\WooCommerce;
 
@@ -19,7 +18,7 @@ use Plugins\WooCommerce;
 /**
  * Theme Class
  *
- * @author HD
+ * @author Gaudev
  */
 final class Theme {
 
@@ -148,7 +147,6 @@ final class Theme {
 			( Admin::get_instance() );
 		}
 
-		( Login_Security::get_instance() );
 		( Customizer::get_instance() );
 		( Optimizer::get_instance() );
 		( Shortcode::get_instance() );
@@ -161,7 +159,7 @@ final class Theme {
 			'template_structures' => THEME_PATH . 'template-structures',
 			'templates'           => THEME_PATH . 'templates',
 			'template_parts'      => THEME_PATH . 'template-parts',
-			'storage'             => THEME_PATH . 'storage',
+			'storage'             => THEME_PATH . 'storages',
 			'languages'           => THEME_PATH . 'languages',
 
 			'inc_ajax'   => INC_PATH . 'ajax',
@@ -173,7 +171,7 @@ final class Theme {
 
 			// autoload template_structures & ajax files
 			if ( in_array( $dir, [ 'template_structures', 'inc_ajax' ] ) ) {
-				Helper::FQN_Load( $path, true );
+				Helper::FQNLoad( $path, true );
 			}
 		}
 	}
@@ -203,7 +201,7 @@ final class Theme {
 		$FQN         = '\\Widgets\\';
 
 		Helper::createDirectory( $widgets_dir );
-		Helper::FQN_Load( $widgets_dir, false, true, $FQN, true );
+		Helper::FQNLoad( $widgets_dir, false, true, $FQN, true );
 	}
 
 	// --------------------------------------------------
@@ -222,7 +220,7 @@ final class Theme {
 
 		remove_action( 'wp_head', [
 			$wp_widget_factory->widgets['WP_Widget_Recent_Comments'],
-			'recent_comments_style'
+			'recent_comments_style',
 		] );
 	}
 
@@ -237,46 +235,21 @@ final class Theme {
 
 		$version = THEME_VERSION;
 		if ( WP_DEBUG ) {
-			$version = date( 'YmdHi', current_time( 'U', 0 ) );
+			$version = date( 'YmdHis', current_time( 'U', 0 ) );
 		}
-
-		// swiper-js
-		if ( ! wp_style_is( 'swiper-style' ) ) {
-			wp_enqueue_style( "swiper-style", ASSETS_URL . "css/plugins/swiper.css", [], $version );
-		}
-		if ( ! wp_script_is( 'swiper', 'registered' ) ) {
-			wp_register_script( "swiper", ASSETS_URL . "js/plugins/swiper.js", [], $version, true );
-			wp_script_add_data( "swiper", "defer", true );
-		}
-
-		// select 2
-		if ( ! wp_style_is( 'select2-style' ) ) {
-			wp_enqueue_style( 'select2-style', ASSETS_URL . 'css/plugins/select2.min.css' );
-		}
-
-		if ( ! wp_script_is( 'select2', 'registered' ) ) {
-			wp_register_script( 'select2', ASSETS_URL . 'js/plugins/select2.full.min.js', [ "jquery-core" ], false, true );
-			wp_script_add_data( "select2", "defer", true );
-		}
-
-		// --------------------------------------------------
 
 		/** Stylesheet */
-		wp_register_style( "plugins-style", ASSETS_URL . "css/plugins.css", [], $version );
-		wp_enqueue_style( "app-style", ASSETS_URL . "css/app.css", [ "plugins-style" ], $version );
+		wp_register_style( "plugin-style", ASSETS_URL . "css/plugins.css", [], $version );
+		wp_enqueue_style( "app-style", ASSETS_URL . "css/app.css", [ "plugin-style" ], $version );
 
 		/** Scripts */
-		wp_enqueue_script( "app", ASSETS_URL . "js/app.js", [ "jquery-core", "swiper", "select2" ], $version, true );
+		wp_enqueue_script( "app", ASSETS_URL . "js/app.js", [ "jquery-core" ], $version, true );
 		wp_script_add_data( "app", "defer", true );
 
-		wp_enqueue_script( "back-to-top", ASSETS_URL . "js/plugins/back-to-top.js", [], false, true );
-		wp_enqueue_script( "social-share", ASSETS_URL . "js/plugins/social-share.js", [], '0.0.3', true );
+		wp_enqueue_script( "back-to-top", ASSETS_URL . "js/plugins/back-to-top.js", [], $version, true );
+		wp_enqueue_script( "social-share", ASSETS_URL . "js/plugins/social-share.js", [], $version, true );
 
-		wp_enqueue_style( "responsive-style", ASSETS_URL . "css/responsive.css", [ "app-style" ], $version );
-		wp_enqueue_style( "chart-style", ASSETS_URL . "css/plugins/chart.css", [ "app-style" ], $version );
-		wp_enqueue_script( "chart", ASSETS_URL . "js/plugins/chart.js", [ "app" ], $version, true );
-
-		//wp_enqueue_style( "fonts-style", ASSETS_URL . "css/fonts.css", [], $version );
+		//wp_enqueue_style( "font-style", ASSETS_URL . "css/fonts.css", [], $version );
 
 		/** Inline Js */
 		$recaptcha_options = Helper::getOption( 'recaptcha__options' );
@@ -301,7 +274,7 @@ final class Theme {
 				'view_more'      => __( 'View more', TEXT_DOMAIN ),
 				'view_detail'    => __( 'Detail', TEXT_DOMAIN ),
 				'added_to_cart'  => __( 'Added to cart', TEXT_DOMAIN ),
-				'confirm_remove' => __( 'Bạn muốn xóa sản phẩm này?', TEXT_DOMAIN ),
+				'confirm_remove' => __( 'Do you want to delete this product?', TEXT_DOMAIN ),
 			],
 		];
 		wp_localize_script( 'jquery-core', TEXT_DOMAIN, $l10n );
@@ -324,7 +297,7 @@ final class Theme {
 	 * @return mixed
 	 */
 	public function restrict_admin_plugin_install( $allcaps, $caps, $args ): mixed {
-		$allowed_users_ids_install_plugins = Helper::filter_setting_options( 'allowed_users_ids_install_plugins', [] );
+		$allowed_users_ids_install_plugins = Helper::filterSettingOptions( 'allowed_users_ids_install_plugins', [] );
 
 		// Get the current user ID
 		$user_id = get_current_user_id();
@@ -336,7 +309,11 @@ final class Theme {
 
 		// If user is not allowed, remove the capability to install plugins
 		if ( isset( $allcaps['activate_plugins'] ) ) {
-			unset( $allcaps['install_plugins'] );
+			unset( $allcaps['install_plugins'], $allcaps['delete_plugins'] );
+		}
+
+		if ( isset( $allcaps['install_themes'] ) ) {
+			unset( $allcaps['install_themes'] );
 		}
 
 		return $allcaps;
@@ -344,22 +321,10 @@ final class Theme {
 
 	// --------------------------------------------------
 
+	/**
+	 * @return void
+	 */
 	private function _hooks(): void {
-		/**
-		 * Use the is-active class of ZURB Foundation on wp_list_pages output.
-		 * From required+ Foundation http://themes.required.ch.
-		 */
-		add_filter( 'wp_list_pages', static function ( $input ) {
-			return str_replace( 'current_page_item', 'current_page_item is-active', $input );
-		}, 10, 2 );
-
-		/** Add support for buttons in the top-bar menu */
-		add_filter( 'wp_nav_menu', static function ( $ul_class ) {
-			$find    = [ '/<a rel="button"/', '/<a title=".*?" rel="button"/' ];
-			$replace = [ '<a rel="button" class="button"', '<a rel="button" class="button"' ];
-
-			return preg_replace( $find, $replace, $ul_class, 1 );
-		} );
 
 		// -------------------------------------------------------------
 		// images sizes
@@ -433,7 +398,7 @@ final class Theme {
 		add_filter( 'login_headerurl', static function () {
 			$headerurl = Helper::getThemeMod( 'login_page_headerurl_setting' );
 
-			return $headerurl ?: Helper::home();
+			return $headerurl ?: Helper::home( '/' );
 		} );
 	}
 

@@ -2,6 +2,8 @@
 
 namespace Cores\Traits;
 
+use Cores\Helper;
+
 \defined( 'ABSPATH' ) || die;
 
 trait File {
@@ -238,14 +240,17 @@ trait File {
 	 * @return bool
 	 */
 	public static function createDirectory( $directory ): bool {
+		if ( ! is_writable( dirname( $directory ) ) ) {
+			error_log( sprintf( 'Cannot write to the parent directory: %s.', dirname( $directory ) ) );
+
+			return false;
+		}
 
 		// Create the directory and return the result.
 		$is_directory_created = wp_mkdir_p( $directory );
 
 		// Bail if you cannot create temp dir.
 		if ( ! $is_directory_created ) {
-
-			// translators: `$directory` is the name of directory that should be created.
 			error_log( sprintf( 'Cannot create directory: %s.', $directory ) );
 		}
 

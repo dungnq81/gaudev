@@ -39,14 +39,14 @@ const DB_COLLATE = 'utf8mb4_unicode_520_ci';
  *
  * @since 2.6.0
  */
-define( 'AUTH_KEY',          'xT)uKACG4mA)p;D+`I$Ww{ItRshci_vEEElxvpxLBW/}kPsjJm0%4Q={bqQ ?u/J' );
-define( 'SECURE_AUTH_KEY',   'I48]I(`48UY-=;t3QmuK{_bp2b9EN9q]~=}J-v}X>r-LW^TCdg1&3T cnkVaeYqz' );
-define( 'LOGGED_IN_KEY',     '`NMEFkM[PM+-!RX#i}0 @JpdCeiTDnHk*KE6(!0JvNWDoRA|I$=n6_bqW!sUchC?' );
-define( 'NONCE_KEY',         'Z),O|r*h_hK1{5drK?xr`%aUG4ce2h*PNmUQBwS-(7iy_qufjcWiT4B+VH5 aYpi' );
-define( 'AUTH_SALT',         '2E=~+rHACSc7#B25YMOMwdiWqq;Ox#HjL({S+prGO:OVsRAZPBr Q#LzvHz$nLpy' );
-define( 'SECURE_AUTH_SALT',  'Pn(QlX/93]il`EZ&CKtzTCebrgL046Oke+&Dd.Ahn/LqkC9x-FIcQv}trX/7cmo1' );
-define( 'LOGGED_IN_SALT',    'o@!zG}/aD0Jg+j, V&a=v9J_~j2 E8g%^Fo8{28WO>T^8QyDfqnqKBt64r)Im;p3' );
-define( 'NONCE_SALT',        'ga,t|aYL:ZqUgI{zLW]aN$p+95lO0,##YzkZP$p9{T:LCIfkp_eg]#NRy0F@5Q3a' );
+define( 'AUTH_KEY', 'xT)uKACG4mA)p;D+`I$Ww{ItRshci_vEEElxvpxLBW/}kPsjJm0%4Q={bqQ ?u/J' );
+define( 'SECURE_AUTH_KEY', 'I48]I(`48UY-=;t3QmuK{_bp2b9EN9q]~=}J-v}X>r-LW^TCdg1&3T cnkVaeYqz' );
+define( 'LOGGED_IN_KEY', '`NMEFkM[PM+-!RX#i}0 @JpdCeiTDnHk*KE6(!0JvNWDoRA|I$=n6_bqW!sUchC?' );
+define( 'NONCE_KEY', 'Z),O|r*h_hK1{5drK?xr`%aUG4ce2h*PNmUQBwS-(7iy_qufjcWiT4B+VH5 aYpi' );
+define( 'AUTH_SALT', '2E=~+rHACSc7#B25YMOMwdiWqq;Ox#HjL({S+prGO:OVsRAZPBr Q#LzvHz$nLpy' );
+define( 'SECURE_AUTH_SALT', 'Pn(QlX/93]il`EZ&CKtzTCebrgL046Oke+&Dd.Ahn/LqkC9x-FIcQv}trX/7cmo1' );
+define( 'LOGGED_IN_SALT', 'o@!zG}/aD0Jg+j, V&a=v9J_~j2 E8g%^Fo8{28WO>T^8QyDfqnqKBt64r)Im;p3' );
+define( 'NONCE_SALT', 'ga,t|aYL:ZqUgI{zLW]aN$p+95lO0,##YzkZP$p9{T:LCIfkp_eg]#NRy0F@5Q3a' );
 define( 'WP_CACHE_KEY_SALT', 'En:Ge$R`m4Q^!$5BBf`V@i^`[oVfA4)?+{uQiW,L5sQ[e.5}W`?8l^y;whB=z7,*' );
 
 
@@ -72,18 +72,20 @@ $table_prefix = 'MTRlZG_';
  *
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
-const WP_DEBUG = true;
+const WP_DEBUG         = true;
+const WP_DEBUG_LOG     = true;
+const WP_DEBUG_DISPLAY = true;
 
 /* Add any custom values between this line and the "stop editing" line. */
 
 if ( ! empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
-    $_SERVER['HTTPS'] = 'on';
+	$_SERVER['HTTPS'] = 'on';
 }
 
 const TRACKING = false;
-if ( ! defined( 'FS_METHOD' ) ) {
-	define( 'FS_METHOD', 'direct' );
-}
+//if ( ! defined( 'FS_METHOD' ) ) {
+//	define( 'FS_METHOD', 'direct' );
+//}
 
 /** PHP Memory */
 const WP_MEMORY_LIMIT     = '512M';
@@ -107,7 +109,7 @@ const WP_AUTO_UPDATE_CORE = true;
 
 /** Absolute path to the WordPress directory. */
 if ( ! defined( 'ABSPATH' ) ) {
-    define( 'ABSPATH', __DIR__ . '/' );
+	define( 'ABSPATH', __DIR__ . '/' );
 }
 
 /** Sets up WordPress vars and included files. */

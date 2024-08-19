@@ -44,7 +44,7 @@ trait DateTime {
 	 * @return string
 	 * @throws \Exception
 	 */
-	public static function iso_duration( string $date_time_1, string $date_time_2 ): string {
+	public static function isoDuration( string $date_time_1, string $date_time_2 ): string {
 
 		$_date_time_1 = new \DateTime( $date_time_1 );
 		$_date_time_2 = new \DateTime( $date_time_2 );
@@ -75,7 +75,7 @@ trait DateTime {
 	 *
 	 * @return false|int|string
 	 */
-	public static function convert_datetime_to_utc( $date_string, string $format = 'Y-m-d H:i:s' ): false|int|string {
+	public static function convertToUTC( $date_string, string $format = 'Y-m-d H:i:s' ): false|int|string {
 		if ( self::isInteger( $date_string ) ) {
 			$date_string = "@" . $date_string;
 		}
@@ -110,7 +110,7 @@ trait DateTime {
 	 *
 	 * @return false|int|string
 	 */
-	public static function convert_utc_to_datetime( $date_string, string $format = 'Y-m-d H:i:s' ): false|int|string {
+	public static function convertFromUTC( $date_string, string $format = 'Y-m-d H:i:s' ): false|int|string {
 		if ( self::isInteger( $date_string ) ) {
 			$date_string = "@" . $date_string;
 		}
@@ -144,7 +144,7 @@ trait DateTime {
 	 *
 	 * @return false|int|string
 	 */
-	public static function convert_datetime_format( $date_string, string $format = 'Y-m-d H:i:s' ): false|int|string {
+	public static function convertDatetimeFormat( $date_string, string $format = 'Y-m-d H:i:s' ): false|int|string {
 
 		if ( self::isInteger( $date_string ) ) {
 			$date_string = "@" . $date_string;
@@ -176,7 +176,7 @@ trait DateTime {
 	 * @return array|int[]
 	 * @throws \Exception
 	 */
-	public static function time_difference( string $date_string ): array {
+	public static function timeDifference( string $date_string ): array {
 		$targetTime = \DateTime::createFromFormat( 'Y-m-d\TH:i:s', $date_string, wp_timezone() );
 
 		if ( $targetTime === false ) {
@@ -184,7 +184,7 @@ trait DateTime {
 				'days'    => '00',
 				'hours'   => '00',
 				'minutes' => '00',
-				'seconds' => '00'
+				'seconds' => '00',
 			];
 		}
 

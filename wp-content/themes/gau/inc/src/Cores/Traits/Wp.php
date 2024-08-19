@@ -34,7 +34,7 @@ trait Wp {
 	 *
 	 * @return string
 	 */
-	public static function CSS_Minify( $css, bool $debug_check = true ): string {
+	public static function CSSMinify( $css, bool $debug_check = true ): string {
 		if ( empty( $css ) ) {
 			return $css;
 		}
@@ -60,7 +60,7 @@ trait Wp {
 	 *
 	 * @return string
 	 */
-	public static function csrfToken( mixed $action = - 1, string $name = '_csrf_token', bool $referer = false, bool $display = true ): string {
+	public static function CSRFToken( mixed $action = - 1, string $name = '_csrf_token', bool $referer = false, bool $display = true ): string {
 		$name        = esc_attr( $name );
 		$nonce_field = '<input type="hidden" id="' . self::random( 9 ) . '" name="' . $name . '" value="' . wp_create_nonce( $action ) . '" />';
 
@@ -86,7 +86,7 @@ trait Wp {
 	 *
 	 * @return void
 	 */
-	public static function FQN_Load( ?string $path, bool $require_path = false, bool $init_class = false, string $FQN = '\\', bool $is_widget = false ): void {
+	public static function FQNLoad( ?string $path, bool $require_path = false, bool $init_class = false, string $FQN = '\\', bool $is_widget = false ): void {
 		if ( ! empty( $path ) && is_dir( $path ) ) {
 
 			foreach ( new DirectoryIterator( $path ) as $fileInfo ) {
@@ -129,7 +129,7 @@ trait Wp {
 	 *
 	 * @return string
 	 */
-	public static function ACF_Link( $link, string $class = '', string $label = '', string $extra_title = '' ): string {
+	public static function ACFLink( $link, string $class = '', string $label = '', string $extra_title = '' ): string {
 		$link_return = '';
 
 		// string
@@ -176,10 +176,10 @@ trait Wp {
 	 *
 	 * @return string
 	 */
-	public static function ACF_Link_Wrap( $content, $link, string $class = '', string $label = '', string|bool $empty_link_default_tag = 'span' ): string {
+	public static function ACFLinkWrap( $content, $link, string $class = '', string $label = '', string|bool $empty_link_default_tag = 'span' ): string {
 		$link_return = '';
 
-		if ( is_string( $link ) && ! empty( $link) ) {
+		if ( is_string( $link ) && ! empty( $link ) ) {
 			$link_return = sprintf( '<a class="%3$s" href="%1$s" title="%2$s"', esc_url( trim( $link ) ), self::escAttr( $label ), self::escAttr( $class ) );
 			$link_return .= '>' . $content . '</a>';
 
@@ -788,10 +788,10 @@ trait Wp {
 
 		// We have a logo. Logo is go.
 		if ( $custom_logo_id ) {
-			$custom_logo_attr = array(
+			$custom_logo_attr = [
 				'class'   => 'custom-logo',
 				'loading' => false,
-			);
+			];
 
 			$unlink_homepage_logo = (bool) get_theme_support( 'custom-logo', 'unlink-homepage-logo' );
 			$unlink_logo          = $unlink_homepage_logo;
@@ -1019,7 +1019,7 @@ trait Wp {
 		$close = '';
 		$glyph = '';
 		if ( true === $glyph_icon ) {
-			$glyph = ' data-glyph=""';
+			$glyph = ' data-fa=""';
 		}
 		if ( $class ) {
 			$open  = '<div class="' . $class . '"' . $glyph . '>';
@@ -1119,24 +1119,6 @@ trait Wp {
 	// -------------------------------------------------------------
 
 	/**
-	 * @param $name
-	 * @param mixed $default
-	 *
-	 * @return array|mixed
-	 */
-	public static function filterSettingOptions( $name, mixed $default = [] ): mixed {
-		$filters = apply_filters( 'hd_theme_setting_options', [] );
-
-		if ( isset( $filters[ $name ] ) ) {
-			return $filters[ $name ] ?: $default;
-		}
-
-		return [];
-	}
-
-	// -------------------------------------------------------------
-
-	/**
 	 * @param null $post
 	 * @param string $taxonomy
 	 * @param string $wrapper_open
@@ -1229,7 +1211,7 @@ trait Wp {
 			printf(
 			/* translators: 1: SVG icon. 2: posted in label, only visible to screen readers. 3: list of tags. */
 				'<div class="hashtag-links links">%1$s<span class="sr-only">%2$s</span>%3$s</div>',
-				'<i data-glyph="#"></i>',
+				'<i data-fa="#"></i>',
 				__( 'Tags', TEXT_DOMAIN ),
 				$hashtag_list
 			); // WPCS: XSS OK.
@@ -1329,7 +1311,7 @@ trait Wp {
 			$html .= ' />';
 		}
 
-		return apply_filters( 'hd_icon_image_html', $html, $attachment_id, $size, $attr );
+		return apply_filters( 'gau_icon_image_html', $html, $attachment_id, $size, $attr );
 	}
 
 	// -------------------------------------------------------------
@@ -1448,7 +1430,7 @@ trait Wp {
 			} /** single */
 			elseif ( is_single() && ! is_attachment() ) {
 
-				$post_type = get_post_type_object( get_post_type() );
+				$post_type  = get_post_type_object( get_post_type() );
 				$taxonomies = get_object_taxonomies( $post_type->name, 'names' );
 
 				if ( empty( $taxonomies ) ) {
@@ -1663,7 +1645,7 @@ trait Wp {
 	 *
 	 * @return array|WP_Post|null
 	 */
-	public static function getCustomPostOption( string $post_type = 'hd_css' ): array|WP_Post|null {
+	public static function getCustomPostOption( string $post_type = 'gau_css' ): array|WP_Post|null {
 		if ( empty( $post_type ) ) {
 			return null;
 		}
@@ -1733,8 +1715,8 @@ trait Wp {
 	 *
 	 * @return array|int|WP_Error|WP_Post|null
 	 */
-	public static function updateCustomPostOption( string $mixed = '', string $post_type = 'hd_css', string $code_type = 'css', bool $encode = false, string $preprocessed = '' ): WP_Error|array|int|WP_Post|null {
-		$post_type = $post_type ?: 'hd_css';
+	public static function updateCustomPostOption( string $mixed = '', string $post_type = 'gau_css', string $code_type = 'css', bool $encode = false, string $preprocessed = '' ): WP_Error|array|int|WP_Post|null {
+		$post_type = $post_type ?: 'gau_css';
 		$code_type = $code_type ?: 'text/css';
 
 		if ( in_array( $code_type, [ 'css', 'text/css' ] ) ) {
@@ -1772,7 +1754,7 @@ trait Wp {
 				// Trigger creation of a revision. This should be removed once #30854 is resolved.
 				$revisions = wp_get_latest_revision_id_and_total_count( $r );
 				if ( ! is_wp_error( $revisions ) && 0 === $revisions['count'] ) {
-					wp_save_post_revision( $r );
+					$revision = wp_save_post_revision( $r );
 				}
 			}
 		}
@@ -1794,7 +1776,7 @@ trait Wp {
 	 *
 	 * @return array|int|WP_Error|WP_Post|null
 	 */
-	public static function updateCustomCssPost( string $css, string $post_type = 'hd_css', bool $encode = false, string $preprocessed = '' ): WP_Error|array|int|WP_Post|null {
+	public static function updateCustomCssPost( string $css, string $post_type = 'gau_css', bool $encode = false, string $preprocessed = '' ): WP_Error|array|int|WP_Post|null {
 		return self::updateCustomPostOption( $css, $post_type, 'text/css', $encode, $preprocessed );
 	}
 
@@ -1926,7 +1908,7 @@ trait Wp {
 		}
 
 		if ( 'article' === $context ) {
-			$type = apply_filters( 'hd_article_itemtype', 'CreativeWork' );
+			$type = apply_filters( 'gau_article_itemtype', 'CreativeWork' );
 			$data = sprintf( 'itemtype="https://schema.org/%s" itemscope', esc_html( $type ) );
 		}
 
@@ -1958,7 +1940,7 @@ trait Wp {
 			$data = 'itemprop="url"';
 		}
 
-		return apply_filters( "hd_{$context}_microdata", $data );
+		return apply_filters( "gau_{$context}_microdata", $data );
 	}
 
 	// -------------------------------------------------------------

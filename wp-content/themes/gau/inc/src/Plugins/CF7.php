@@ -9,7 +9,7 @@ use Cores\Traits\Singleton;
 /**
  * Contact Form 7
  *
- * @author   WEBHD
+ * @author   Gaudev
  */
 final class CF7 {
 
@@ -20,8 +20,8 @@ final class CF7 {
 	private function init(): void {
 
 		add_filter( 'wpcf7_autop_or_not', '__return_false' ); // remove <p> and <br> contact-form-7 plugin
-		add_filter( 'wpcf7_form_tag', [ &$this, 'dynamic_select_terms' ], 10, 1 ); // dynamic taxonomy select
 		add_filter( 'wpcf7_verify_nonce', '__return_true' ); // form CSRF
+		add_filter( 'wpcf7_form_tag', [ &$this, 'dynamic_select_terms' ], 10, 1 ); // dynamic taxonomy select
 	}
 
 	// --------------------------------------------------

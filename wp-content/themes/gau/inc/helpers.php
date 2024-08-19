@@ -2,10 +2,12 @@
 /**
  * helpers functions
  *
- * @author WEBHD
+ * @author Gaudev
  */
 
 \defined( 'ABSPATH' ) || die;
 
+// --------------------------------------------------
+// Custom functions
 // --------------------------------------------------
 

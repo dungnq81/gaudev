@@ -10,7 +10,7 @@ use Cores\Traits\Singleton;
 /**
  * Advanced Custom Fields
  *
- * @author   WEBHD
+ * @author   Gaudev
  */
 final class ACF {
 
@@ -32,7 +32,7 @@ final class ACF {
 		$fields_dir = __DIR__ . DIRECTORY_SEPARATOR . 'fields';
 
 		Helper::createDirectory( $fields_dir );
-		Helper::FQN_Load( $fields_dir, true );
+		Helper::FQNLoad( $fields_dir, true );
 
 		add_action( 'wp_loaded', [ &$this, 'widget_css_classes_frontend' ] );
 		add_filter( 'wp_nav_menu_objects', [ &$this, 'wp_nav_menu_objects' ], 11, 2 );
@@ -114,7 +114,7 @@ final class ACF {
 		}
 
 		// Only unique, non-empty values, separated by space, escaped for HTML attributes.
-		$classes = esc_attr( implode( ' ', array_unique( array_filter( $classes ) ) ) );
+		$classes = Helper::escAttr( implode( ' ', array_unique( array_filter( $classes ) ) ) );
 
 		if ( ! empty( $classes ) ) {
 
@@ -240,7 +240,7 @@ final class ACF {
 
 				if ( $menu_glyph ) {
 					$item->classes[] = 'menu-glyph';
-					$title           = '<span data-glyph="' . esc_attr( $menu_glyph ) . '">' . $title . '</span>';
+					$title           = '<span data-fa="' . Helper::escAttr( $menu_glyph ) . '">' . $title . '</span>';
 				}
 
 				if ( $menu_image ) {
@@ -259,7 +259,7 @@ final class ACF {
 						$_css .= 'background-color:' . $menu_label_background . ';';
 					}
 
-					$_style = $_css ? ' style="' . Helper::CSS_Minify( $_css, true ) . '"' : '';
+					$_style = $_css ? ' style="' . Helper::CSSMinify( $_css, true ) . '"' : '';
 					$title  .= '<sup' . $_style . '>' . $menu_label_text . '</sup>';
 				}
 

@@ -12,7 +12,7 @@ require __DIR__ . "/functions.php";
 /**
  * WooCommerce Plugin
  *
- * @author   WEBHD
+ * @author   Gaudev
  */
 final class WooCommerce {
 
@@ -35,19 +35,40 @@ final class WooCommerce {
 		}
 
 		add_action( 'widgets_init', [ &$this, 'unregister_default_widgets' ], 33 );
-		add_action( 'widgets_init', [ &$this, 'register_widgets' ], 33 );
+		add_action( 'widgets_init', [ &$this, 'register_widgets' ], 34 );
 
 		add_action( 'after_setup_theme', [ &$this, 'after_setup_theme' ], 33 );
 		add_action( 'enqueue_block_assets', [ &$this, 'enqueue_block_assets' ], 41 );
 		add_action( 'wp_enqueue_scripts', [ &$this, 'enqueue_scripts' ], 98 );
 
-		// https://stackoverflow.com/questions/57321805/remove-header-from-the-woocommerce-administrator-panel
-		add_action( 'admin_head', static function () {
-			echo '<style>#wpadminbar ~ #wpbody { margin-top: 0 !important; }.woocommerce-layout__header { display: none !important; }</style>';
-		} );
+		add_filter( 'wp_theme_json_data_theme', [ &$this, 'wp_theme_json_data_theme' ] );
 
 		// Custom hooks
 		( new Hook() );
+	}
+
+	// ------------------------------------------------------
+
+	/**
+	 * @param $theme_json
+	 *
+	 * @return mixed
+	 */
+	public function wp_theme_json_data_theme( $theme_json ): mixed {
+		$new_data = [
+			'version'  => 1,
+			'settings' => [
+				'typography' => [
+					'fontFamilies' => [
+						'theme' => [],
+					],
+				],
+			],
+		];
+
+		$theme_json->update_with( $new_data );
+
+		return $theme_json;
 	}
 
 	// ------------------------------------------------------
@@ -59,7 +80,7 @@ final class WooCommerce {
 		remove_action( 'wp_footer', [ WC()->structured_data, 'output_structured_data' ], 10 );
 		remove_action( 'woocommerce_email_order_details', [
 			WC()->structured_data,
-			'output_email_structured_data'
+			'output_email_structured_data',
 		], 30 );
 	}
 
@@ -75,7 +96,7 @@ final class WooCommerce {
 		$FQN         = '\\Plugins\\WooCommerce\\Widgets\\';
 
 		Helper::createDirectory( $widgets_dir );
-		Helper::FQN_Load( $widgets_dir, false, true, $FQN, true );
+		Helper::FQNLoad( $widgets_dir, false, true, $FQN, true );
 	}
 
 	// ------------------------------------------------------
@@ -127,7 +148,6 @@ final class WooCommerce {
 			add_filter( 'woocommerce_enqueue_styles', '__return_false' );
 		}
 
-		// Remove default hooks
 		remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
 	}
 

@@ -11,6 +11,12 @@ namespace Plugins\WooCommerce;
  */
 class Hook {
 	public function __construct() {
+
+		// https://stackoverflow.com/questions/57321805/remove-header-from-the-woocommerce-administrator-panel
+		add_action( 'admin_head', static function () {
+			echo '<style>#wpadminbar ~ #wpbody { margin-top: 0 !important; }.woocommerce-layout__header { display: none !important; }</style>';
+		} );
+
 		add_filter( 'woocommerce_product_get_rating_html', [ &$this, '_hook_woocommerce_product_get_rating_html' ], 10, 3 );
 	}
 

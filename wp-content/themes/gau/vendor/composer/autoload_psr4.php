@@ -19,4 +19,5 @@ return array(
     'Libs\\' => array($baseDir . '/inc/src/Libs'),
     'Detection\\' => array($vendorDir . '/mobiledetect/mobiledetectlib/src'),
     'Cores\\' => array($baseDir . '/inc/src/Cores'),
+    'Admin\\' => array($baseDir . '/inc/src/Admin'),
 );

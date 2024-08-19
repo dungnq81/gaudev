@@ -1,0 +1,25 @@
+{
+	"name": "plugins/hd-addons",
+	"description": "HD-Addons plugin",
+	"authors": [
+		{
+			"name": "WEBHD Team"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Addons\\": "src"
+		},
+		"files": [],
+		"classmap": []
+	},
+	"require": {
+		"php": ">=8.2",
+		"mobiledetect/mobiledetectlib": "^4.8.06",
+		"enshrined/svg-sanitize": "@stable"
+	}
+	,
+	"require-dev": {
+		"roave/security-advisories": "dev-latest"
+	}
+}

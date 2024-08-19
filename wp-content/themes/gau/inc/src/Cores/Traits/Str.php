@@ -37,7 +37,7 @@ trait Str {
 	 * @return array|string|string[]|null
 	 */
 	public static function removeEmptyP( $content ): array|string|null {
-		return \preg_replace('/<p>\s*<\/p>/', '', $content);
+		return \preg_replace( '/<p>\s*<\/p>/', '', $content );
 	}
 
 	// --------------------------------------------------
@@ -89,18 +89,18 @@ trait Str {
 	public static function removeInlineJsCss( $content ): array|string|null {
 
 		// Remove <script> tags
-		$content = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $content);
+		$content = preg_replace( '/<script\b[^>]*>(.*?)<\/script>/is', '', $content );
 
 		// Remove JavaScript event handlers (on* attributes)
-		$content = preg_replace('/\s*on\w+="[^"]*"/i', '', $content);
-		$content = preg_replace("/\s*on\w+='[^']*'/i", '', $content);
+		$content = preg_replace( '/\s*on\w+="[^"]*"/i', '', $content );
+		$content = preg_replace( "/\s*on\w+='[^']*'/i", '', $content );
 
 		// Remove <style> tags
-		$content = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $content);
+		$content = preg_replace( '/<style\b[^>]*>(.*?)<\/style>/is', '', $content );
 
 		// Remove inline style attributes
-		$content = preg_replace('/\s*style="[^"]*"/i', '', $content);
-		$content = preg_replace("/\s*style='[^']*'/i", '', $content);
+		$content = preg_replace( '/\s*style="[^"]*"/i', '', $content );
+		$content = preg_replace( "/\s*style='[^']*'/i", '', $content );
 
 		return $content;
 	}
@@ -128,7 +128,7 @@ trait Str {
 			'/eval\(/i',           // Use of eval()
 			'/document\.write\(/i',// Use of document.write()
 			'/<script.*?src=[\'"]?data:/i', // Inline scripts with data URIs
-			'/base64,/i'           // Base64 encoding
+			'/base64,/i',           // Base64 encoding
 		];
 
 		// Loop through all matched <script> tags

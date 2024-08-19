@@ -3,7 +3,7 @@
         'name' => 'wordpress/gau',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '9271adb6e49b1a1c1c864b68a2619485e946861f',
+        'reference' => '86c973e768d4dafb4d5cab55ba00e9cdb57749ba',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -58,7 +58,7 @@
         'roave/security-advisories' => array(
             'pretty_version' => 'dev-latest',
             'version' => 'dev-latest',
-            'reference' => 'f6047d2d129e27d4ed64f0a9b1371c0e5c4761f5',
+            'reference' => '251a4f1fefcc6e6cc90d50514fee6b6e3745cb3e',
             'type' => 'metapackage',
             'install_path' => null,
             'aliases' => array(
@@ -76,9 +76,9 @@
             'dev_requirement' => true,
         ),
         'symfony/var-dumper' => array(
-            'pretty_version' => 'v7.1.2',
-            'version' => '7.1.2.0',
-            'reference' => '5857c57c6b4b86524c08cf4f4bc95327270a816d',
+            'pretty_version' => 'v7.1.3',
+            'version' => '7.1.3.0',
+            'reference' => '86af4617cca75a6e28598f49ae0690f3b9d4591f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/var-dumper',
             'aliases' => array(),
@@ -96,7 +96,7 @@
         'wordpress/gau' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '9271adb6e49b1a1c1c864b68a2619485e946861f',
+            'reference' => '86c973e768d4dafb4d5cab55ba00e9cdb57749ba',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
