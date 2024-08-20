@@ -44,7 +44,7 @@ final class Xmlrpc extends Abstract_Htaccess {
 	 */
 	public function plugins_using_xml_rpc(): array {
 		// Get the list of active plugins.
-		$active_plugins = get_option( 'active_plugins', false );
+		$active_plugins = get_option( 'active_plugins' );
 
 		// The array that will contain conflicting plugins if there are any.
 		$maybe_conflict = [];

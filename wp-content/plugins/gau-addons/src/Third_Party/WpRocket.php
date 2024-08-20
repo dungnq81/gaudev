@@ -20,7 +20,7 @@ final class WpRocket {
 	private function init(): void {
 
 		/** Server does not support using .htaccess */
-		if ( ! ht_access() ) {
+		if ( ! htaccess() ) {
 
 			// Remove rewrite rules block of WP Rocket from .htaccess.
 			add_filter( 'rocket_htaccess_charset', '__return_false' );

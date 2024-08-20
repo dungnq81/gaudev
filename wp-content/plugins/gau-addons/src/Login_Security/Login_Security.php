@@ -18,7 +18,7 @@ final class Login_Security {
 	public mixed $login_security_options = [];
 
 	private function init(): void {
-		$this->login_security_options = get_option( 'login_security__options', false );
+		$this->login_security_options = get_option( 'login_security__options' );
 
 		( Custom_Login::get_instance() );
 

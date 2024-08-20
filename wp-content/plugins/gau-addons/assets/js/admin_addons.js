@@ -389,6 +389,38 @@ jQuery(function ($) {
     (_$$closest = $(this).closest('.notice.is-dismissible')) === null || _$$closest === void 0 || _$$closest.fadeOutAndRemove(400);
   });
 
+  // ajax submit settings
+  $(document).on('submit', '#_settings_form', function (e) {
+    e.preventDefault();
+    var $this = $(this);
+    var btn_submit = $this.find('button[name="_submit_settings"]');
+    var button_text = btn_submit.html();
+    var button_text_loading = '<i class="fa-solid fa-spinner fa-spin-pulse"></i>';
+    btn_submit.prop('disabled', true).html(button_text_loading);
+    $.ajax({
+      type: 'POST',
+      url: ajaxurl,
+      data: {
+        action: 'submit_settings',
+        _data: $this.serializeObject(),
+        _ajax_nonce: $this.find('input[name="_wpnonce"]').val(),
+        _wp_http_referer: $this.find('input[name="_wp_http_referer"]').val()
+      }
+    }).done(function (data) {
+      btn_submit.prop('disabled', false).html(button_text);
+      $this.find('#_content').prepend(data);
+
+      // dismissible auto hide
+      setTimeout(function () {
+        var _$this$find$find;
+        (_$this$find$find = $this.find('#_content').find('.dismissible-auto')) === null || _$this$find$find === void 0 || _$this$find$find.fadeOutAndRemove(400);
+      }, 4000);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+      btn_submit.prop('disabled', false).html(button_text);
+      console.log(errorThrown);
+    });
+  });
+
   // filter tabs
   var filter_tabs = $('.filter-tabs');
   $.each(filter_tabs, function (i, el) {
@@ -408,6 +440,7 @@ jQuery(function ($) {
     $nav.find('a.current').removeClass('current');
     $nav.find("a[href=\"".concat(cookieValue, "\"]")).addClass('current');
     $nav.find('a').on('click', function (e) {
+      var _$content$find$remove, _$$addClass;
       e.preventDefault();
       var $this = $(this);
       var hash = $this.attr('href');
@@ -416,8 +449,8 @@ jQuery(function ($) {
         path: ''
       });
       $nav.find('a.current').removeClass('current');
-      $content.find('.tabs-panel:visible').removeClass('show').hide();
-      $($this.attr('href')).addClass('show').show();
+      (_$content$find$remove = $content.find('.tabs-panel:visible').removeClass('show')) === null || _$content$find$remove === void 0 || _$content$find$remove.hide();
+      (_$$addClass = $($this.attr('href')).addClass('show')) === null || _$$addClass === void 0 || _$$addClass.show();
       $this.addClass('current');
     }).filter('.current').trigger('click');
   });
@@ -472,7 +505,42 @@ jQuery(function ($) {
       }
     });
   });
+
+  // select2 emails
+  var select2_emails = $('.select2-emails');
+  $.each(select2_emails, function (i, el) {
+    $(el).select2({
+      multiple: true,
+      tags: true,
+      allowClear: true,
+      width: 'resolve',
+      dropdownAutoWidth: true,
+      placeholder: $(el).attr('placeholder'),
+      createTag: function createTag(params) {
+        var term = $.trim(params.term);
+        if (isValidEmail(term)) {
+          return {
+            id: term,
+            text: term
+          };
+        } else {
+          return null;
+        }
+      }
+    });
+  });
 });
+
+/**
+ * Validate email address
+ *
+ * @param {string} email
+ * @returns {boolean}
+ */
+function isValidEmail(email) {
+  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(email);
+}
 
 /**
  * validate IP range (IPv4)

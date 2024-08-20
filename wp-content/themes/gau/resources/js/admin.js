@@ -1,8 +1,3 @@
-import { nanoid } from 'nanoid';
-import Cookies from 'js-cookie';
-
-Object.assign(window, { Cookies });
-
 jQuery(function ($) {
     // Pace
     $(document).ajaxStart(() => {

@@ -1,6 +1,6 @@
 <?php
 
-$contact_options = get_option( 'contact_btn__options', false, false );
+$contact_options = get_option( 'contact_button__options' );
 
 $contact_title        = $contact_options['contact_title'] ?? '';
 $contact_url          = $contact_options['contact_url'] ?? '';

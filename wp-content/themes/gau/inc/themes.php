@@ -552,7 +552,9 @@ function __theme_setting_options( array $arr ): array {
 		],
 
 		// Custom Email list.
-		'custom_emails'                     => [],
+		'custom_emails'                     => [
+			'custom_contact' => __( 'Contact', TEXT_DOMAIN )
+		],
 
 		// lazy_load_exclude.
 		'lazy_load_exclude_css_class'       => [

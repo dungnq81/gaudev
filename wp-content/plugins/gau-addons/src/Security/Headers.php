@@ -111,7 +111,7 @@ final class Headers extends Abstract_Htaccess {
 		foreach ( $this->headers as $header_option => $security_headers ) {
 
 			// Check if the security optimization is enabled.
-			$security_options = get_option( 'security__options', false );
+			$security_options = get_option( 'security__options' );
 			$advanced_xss_protection = $security_options['advanced_xss_protection'] ?? '';
 			if ( 1 !== (int) $advanced_xss_protection ) {
 				continue;

@@ -8,8 +8,7 @@ namespace Addons\Base;
  * Htaccess Class
  *
  * @author SiteGround Security
- *
- * Modified by NTH for HD theme
+ * Modified by NTH
  */
 abstract class Abstract_Htaccess {
 
@@ -34,8 +33,26 @@ abstract class Abstract_Htaccess {
 	 */
 	public function __construct() {
 		if ( is_null( $this->wp_filesystem ) ) {
-			$this->wp_filesystem = setup_wp_filesystem();
+			$this->wp_filesystem = $this->_wp_filesystem();
 		}
+	}
+
+	// --------------------------------------------------
+
+	/**
+	 * @return mixed
+	 */
+	private function _wp_filesystem(): mixed {
+		global $wp_filesystem;
+
+		// Initialize the WP filesystem, no more using 'file-put-contents' function.
+		// Front-end only. In the back-end; its already included
+		if ( empty( $wp_filesystem ) ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		return $wp_filesystem;
 	}
 
 	// --------------------------------------------------
@@ -139,7 +156,32 @@ abstract class Abstract_Htaccess {
 	 * @return bool True on success, false otherwise.
 	 */
 	protected function lock_and_write( string $content ): bool {
-		return do_lock_write( $this->path, $content );
+		return $this->_do_lock_write( $this->path, $content );
+	}
+
+	// --------------------------------------------------
+
+	/**
+	 * Lock file and write something in it.
+	 *
+	 * @param string $content Content to add.
+	 *
+	 * @return bool    True on success, false otherwise.
+	 */
+	private function _do_lock_write( $path, string $content = '' ): bool {
+		$fp = fopen( $path, 'wb+' );
+
+		if ( flock( $fp, LOCK_EX ) ) {
+			fwrite( $fp, $content );
+			flock( $fp, LOCK_UN );
+			fclose( $fp );
+
+			return true;
+		}
+
+		fclose( $fp );
+
+		return false;
 	}
 
 	// --------------------------------------------------

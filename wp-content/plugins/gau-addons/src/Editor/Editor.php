@@ -26,7 +26,7 @@ final class Editor {
 	 * @return void
 	 */
 	public function editor_admin_init(): void {
-		$block_editor_options = get_option( 'block_editor__options', false, false );
+		$block_editor_options = get_option( 'block_editor__options' );
 
 		$use_widgets_block_editor_off           = $block_editor_options['use_widgets_block_editor_off'] ?? '';
 		$gutenberg_use_widgets_block_editor_off = $block_editor_options['gutenberg_use_widgets_block_editor_off'] ?? '';
@@ -54,7 +54,7 @@ final class Editor {
 	 * @return void
 	 */
 	public function editor_enqueue_scripts(): void {
-		$block_editor_options = get_option( 'block_editor__options', false, false );
+		$block_editor_options = get_option( 'block_editor__options' );
 		$block_style_off      = $block_editor_options['block_style_off'] ?? '';
 
 		/** Remove block CSS */

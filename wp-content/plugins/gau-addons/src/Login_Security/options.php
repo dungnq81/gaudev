@@ -4,7 +4,7 @@ use Addons\Login_Security\Login_Attempts;
 
 \defined( 'ABSPATH' ) || die;
 
-$login_security_options = get_option( 'login_security__options', false );
+$login_security_options = get_option( 'login_security__options' );
 
 $custom_login_url          = $login_security_options['custom_login_url'] ?? '';
 $login_ips_access          = $login_security_options['login_ips_access'] ?? '';

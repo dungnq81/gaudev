@@ -1,4 +1,4 @@
-# Bs Caching
+# Browser Caching
 <IfModule mod_expires.c>
     ExpiresActive on
   # CSS
@@ -36,4 +36,4 @@
     ExpiresByType application/x-font-ttf                "access plus 1 year"
     ExpiresByType font/opentype                         "access plus 1 year"
 </IfModule>
-# Bs Caching END
+# Browser Caching END

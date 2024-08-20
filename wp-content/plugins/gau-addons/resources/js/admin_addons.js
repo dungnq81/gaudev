@@ -108,6 +108,41 @@ jQuery(function ($) {
         $(this).closest('.notice.is-dismissible')?.fadeOutAndRemove(400);
     });
 
+    // ajax submit settings
+    $(document).on('submit', '#_settings_form', function (e) {
+        e.preventDefault();
+        let $this = $(this);
+
+        let btn_submit = $this.find('button[name="_submit_settings"]');
+        let button_text = btn_submit.html();
+        let button_text_loading = '<i class="fa-solid fa-spinner fa-spin-pulse"></i>';
+
+        btn_submit.prop('disabled', true).html(button_text_loading);
+        $.ajax({
+            type: 'POST',
+            url: ajaxurl,
+            data: {
+                action: 'submit_settings',
+                _data: $this.serializeObject(),
+                _ajax_nonce: $this.find('input[name="_wpnonce"]').val(),
+                _wp_http_referer: $this.find('input[name="_wp_http_referer"]').val(),
+            },
+        })
+            .done(function (data) {
+                btn_submit.prop('disabled', false).html(button_text);
+                $this.find('#_content').prepend(data);
+
+                // dismissible auto hide
+                setTimeout(() => {
+                    $this.find('#_content').find('.dismissible-auto')?.fadeOutAndRemove(400);
+                }, 4000);
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                btn_submit.prop('disabled', false).html(button_text);
+                console.log(errorThrown);
+            });
+    });
+
     // filter tabs
     const filter_tabs = $('.filter-tabs');
     $.each(filter_tabs, function (i, el) {
@@ -134,9 +169,9 @@ jQuery(function ($) {
                 Cookies.set(_cookie, hash, { expires: 7, path: '' });
 
                 $nav.find('a.current').removeClass('current');
-                $content.find('.tabs-panel:visible').removeClass('show').hide();
+                $content.find('.tabs-panel:visible').removeClass('show')?.hide();
 
-                $($this.attr('href')).addClass('show').show();
+                $($this.attr('href')).addClass('show')?.show();
                 $this.addClass('current');
             })
             .filter('.current')
@@ -193,7 +228,42 @@ jQuery(function ($) {
             },
         });
     });
+
+    // select2 emails
+    const select2_emails = $('.select2-emails');
+    $.each(select2_emails, function (i, el) {
+        $(el).select2({
+            multiple: true,
+            tags: true,
+            allowClear: true,
+            width: 'resolve',
+            dropdownAutoWidth: true,
+            placeholder: $(el).attr('placeholder'),
+            createTag: function (params) {
+                let term = $.trim(params.term);
+                if (isValidEmail(term)) {
+                    return {
+                        id: term,
+                        text: term,
+                    };
+                } else {
+                    return null;
+                }
+            },
+        });
+    });
 });
+
+/**
+ * Validate email address
+ *
+ * @param {string} email
+ * @returns {boolean}
+ */
+function isValidEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
 
 /**
  * validate IP range (IPv4)

@@ -1,6 +1,6 @@
 <?php
 
-$contact_info_options = get_option( 'contact_info__options', false, false );
+$contact_info_options = get_option( 'contact_info__options' );
 
 $hotline = $contact_info_options['hotline'] ?? '';
 $address = ! empty( $contact_info_options['address'] ) ? wp_unslash( $contact_info_options['address'] ) : '';

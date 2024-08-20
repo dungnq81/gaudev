@@ -4,6 +4,105 @@ defined( 'ABSPATH' ) || die;
 
 /** ----------------------------------------------- */
 
+if ( ! function_exists( 'explode_multi' ) ) {
+	/**
+	 * @param $delimiters
+	 * @param $string
+	 * @param bool $remove_empty
+	 *
+	 * @return mixed|string[]
+	 */
+	function explode_multi( $delimiters, $string, bool $remove_empty = true ): mixed {
+		if ( is_string( $delimiters ) ) {
+			return explode( $delimiters, $string );
+		}
+
+		if ( is_array( $delimiters ) ) {
+			$ready  = str_replace( $delimiters, $delimiters[0], $string );
+			$launch = explode( $delimiters[0], $ready );
+			if ( $remove_empty ) {
+				$launch = array_filter( $launch );
+			}
+
+			return $launch;
+		}
+
+		return $string;
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'message_success' ) ) {
+	/**
+	 * @param $message
+	 * @param bool $auto_hide
+	 *
+	 * @return void
+	 */
+	function message_success( $message, bool $auto_hide = false ): void {
+		$message = $message ?: 'Values saved';
+		$message = __( $message, ADDONS_TEXT_DOMAIN );
+
+		$class = 'notice notice-success is-dismissible';
+		if ( $auto_hide ) {
+			$class .= ' dismissible-auto';
+		}
+
+		printf( '<div class="%1$s"><p><strong>%2$s</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>', esc_attr( $class ), $message );
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'message_error' ) ) {
+	/**
+	 * @param $message
+	 * @param bool $auto_hide
+	 *
+	 * @return void
+	 */
+	function message_error( $message, bool $auto_hide = false ): void {
+		$message = $message ?: 'Values error';
+		$message = __( $message, ADDONS_TEXT_DOMAIN );
+
+		$class = 'notice notice-error is-dismissible';
+		if ( $auto_hide ) {
+			$class .= ' dismissible-auto';
+		}
+
+		printf( '<div class="%1$s"><p><strong>%2$s</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>', esc_attr( $class ), $message );
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'in_array_checked' ) ) {
+	/**
+	 * @param array $checked_arr
+	 * @param $current
+	 * @param bool $display
+	 * @param string $type
+	 *
+	 * @return string
+	 */
+	function in_array_checked( array $checked_arr, $current, bool $display = true, string $type = 'checked' ): string {
+		if ( in_array( $current, $checked_arr, false ) ) {
+			$result = " $type='$type'";
+		} else {
+			$result = '';
+		}
+
+		if ( $display ) {
+			echo $result;
+		}
+
+		return $result;
+	}
+}
+
+/** ----------------------------------------------- */
+
 if ( ! function_exists( 'redirect' ) ) {
 	/**
 	 * @param string $uri
@@ -103,6 +202,97 @@ if ( ! function_exists( 'get_custom_post_option' ) ) {
 
 /** ----------------------------------------------- */
 
+if ( ! function_exists( 'update_custom_post_option' ) ) {
+	/**
+	 * @param string $mixed
+	 * @param string $post_type - max 20 characters
+	 * @param string $code_type
+	 * @param bool $encode
+	 * @param string $preprocessed
+	 *
+	 * @return array|int|WP_Error|WP_Post|null
+	 */
+	function update_custom_post_option( string $mixed = '', string $post_type = 'gau_css', string $code_type = 'css', bool $encode = false, string $preprocessed = '' ): WP_Error|array|int|WP_Post|null {
+		$post_type = $post_type ?: 'gau_css';
+		$code_type = $code_type ?: 'text/css';
+
+		if ( in_array( $code_type, [ 'css', 'text/css' ] ) ) {
+			$mixed = strip_all_tags( $mixed, true, false );
+		}
+
+		if ( $encode ) {
+			$mixed = base64_encode( $mixed );
+		}
+
+		$post_data = [
+			'post_type'             => $post_type,
+			'post_status'           => 'publish',
+			'post_content'          => $mixed,
+			'post_content_filtered' => $preprocessed,
+		];
+
+		// Update post if it already exists, otherwise create a new one.
+		$post = get_custom_post_option( $post_type );
+		if ( $post ) {
+			$post_data['ID'] = $post->ID;
+			$r               = wp_update_post( wp_slash( $post_data ), true );
+		} else {
+			$post_data['post_title'] = $post_type . '_post_title';
+			$post_data['post_name']  = wp_generate_uuid4();
+			$r                       = wp_insert_post( wp_slash( $post_data ), true );
+
+			if ( ! is_wp_error( $r ) ) {
+				set_theme_mod( $post_type . '_option_id', $r );
+
+				// Trigger creation of a revision. This should be removed once #30854 is resolved.
+				$revisions = wp_get_latest_revision_id_and_total_count( $r );
+				if ( ! is_wp_error( $revisions ) && 0 === $revisions['count'] ) {
+					$revision = wp_save_post_revision( $r );
+				}
+			}
+		}
+
+		if ( is_wp_error( $r ) ) {
+			return $r;
+		}
+
+		return get_post( $r );
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'strip_all_tags' ) ) {
+	/**
+	 * @param $string
+	 * @param bool $remove_js
+	 * @param bool $flatten
+	 * @param $allowed_tags
+	 *
+	 * @return string
+	 */
+	function strip_all_tags( $string, bool $remove_js = true, bool $flatten = true, $allowed_tags = null ): string {
+
+		if ( ! is_scalar( $string ) ) {
+			return '';
+		}
+
+		if ( $remove_js ) {
+			$string = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', ' ', $string );
+		}
+
+		$string = strip_tags( $string, $allowed_tags );
+
+		if ( $flatten ) {
+			$string = preg_replace( '/[\r\n\t ]+/', ' ', $string );
+		}
+
+		return trim( $string );
+	}
+}
+
+/** ----------------------------------------------- */
+
 if ( ! function_exists( 'filter_setting_options' ) ) {
 	/**
 	 * @param $name
@@ -143,27 +333,29 @@ if ( ! function_exists( 'capitalized_slug' ) ) {
 
 /** ----------------------------------------------- */
 
-/**
- * @param string $str
- * @param string|null $encoding
- *
- * @return string
- */
-function mb_ucfirst( string $str, string $encoding = null ): string {
-	if ( is_null( $encoding ) ) {
-		$encoding = mb_internal_encoding();
-	}
+if ( ! function_exists( 'mb_ucfirst' ) ) {
+	/**
+	 * @param string $str
+	 * @param string|null $encoding
+	 *
+	 * @return string
+	 */
+	function mb_ucfirst( string $str, string $encoding = null ): string {
+		if ( is_null( $encoding ) ) {
+			$encoding = mb_internal_encoding();
+		}
 
-	return mb_strtoupper( mb_substr( $str, 0, 1, $encoding ), $encoding ) . mb_substr( $str, 1, null, $encoding );
+		return mb_strtoupper( mb_substr( $str, 0, 1, $encoding ), $encoding ) . mb_substr( $str, 1, null, $encoding );
+	}
 }
 
 /** ----------------------------------------------- */
 
-if ( ! function_exists( 'ht_access' ) ) {
+if ( ! function_exists( 'htaccess' ) ) {
 	/**
 	 * @return bool
 	 */
-	function ht_access(): bool {
+	function htaccess(): bool {
 		global $is_apache;
 
 		if ( $is_apache ) {
@@ -218,6 +410,43 @@ if ( ! function_exists( 'ip_address' ) ) {
 
 /** ----------------------------------------------- */
 
+if ( ! function_exists( 'clear_all_cache' ) ) {
+	/**
+	 * @return void
+	 */
+	function clear_all_cache(): void {
+		// LiteSpeed cache
+		if ( class_exists( \LiteSpeed\Purge::class ) ) {
+			\LiteSpeed\Purge::purge_all();
+		}
+
+		// wp-rocket cache
+		if ( \defined( 'WP_ROCKET_PATH' ) && \function_exists( 'rocket_clean_domain' ) ) {
+			\rocket_clean_domain();
+		}
+
+		// Clear minified CSS and JavaScript files.
+		if ( function_exists( 'rocket_clean_minify' ) ) {
+			\rocket_clean_minify();
+		}
+
+		// Jetpack
+		if ( check_plugin_active( 'jetpack/jetpack.php' ) ) {
+			global $wpdb;
+
+			$wpdb->query( "DELETE FROM {$wpdb->options} WHERE `option_name` LIKE '_transient_jetpack_%'" );
+			$wpdb->query( "DELETE FROM {$wpdb->options} WHERE `option_name` LIKE '_transient_timeout_jetpack_%'" );
+
+			// Clear Photon cache locally
+			if ( class_exists( \Jetpack_Photon::class ) ) {
+				\Jetpack_Photon::instance()->purge_cache();
+			}
+		}
+	}
+}
+
+/** ----------------------------------------------- */
+
 if ( ! function_exists( 'check_plugin_active' ) ) {
 	/**
 	 * Check if the plugin is installed
@@ -253,3 +482,28 @@ if ( ! function_exists( 'check_plugin_installed' ) ) {
 		return array_key_exists( $plugin_slug, $installed_plugins ) || in_array( $plugin_slug, $installed_plugins, false );
 	}
 }
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'check_smtp_plugin_active' ) ) {
+	/**
+	 * @return bool
+	 */
+	function check_smtp_plugin_active(): bool {
+		$smtp_plugins_support = filter_setting_options( 'smtp_plugins_support', [] );
+
+		$check = true;
+		if ( ! empty( $smtp_plugins_support ) ) {
+			foreach ( $smtp_plugins_support as $plugin_slug ) {
+				if ( check_plugin_active( $plugin_slug ) ) {
+					$check = false;
+					break;
+				}
+			}
+		}
+
+		return $check;
+	}
+}
+
+/** ----------------------------------------------- */

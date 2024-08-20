@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || die;
 
-$smtp_options = get_option( 'smtp__options', false );
+$smtp_options = get_option( 'smtp__options' );
 
 $smtp_host                     = $smtp_options['smtp_host'] ?? '';
 $smtp_auth                     = $smtp_options['smtp_auth'] ?? '';
@@ -82,7 +82,7 @@ $smtp_disable_ssl_verification = $smtp_options['smtp_disable_ssl_verification'] 
 	</div>
 </div>
 <div class="section section-text" id="section_smtp_from_email">
-	<label class="heading" for="smtp_from_email"><?php _e('From Email Address', ADDONS_TEXT_DOMAIN); ?></label>
+	<label class="heading" for="smtp_from_email"><?php _e( 'From Email Address', ADDONS_TEXT_DOMAIN ); ?></label>
 	<div class="desc"><?php _e( 'The email address which will be used as the <b>From Address</b> if it is not supplied to the mail function.', ADDONS_TEXT_DOMAIN );?></div>
 	<div class="option">
 		<div class="controls">
@@ -91,7 +91,7 @@ $smtp_disable_ssl_verification = $smtp_options['smtp_disable_ssl_verification'] 
 	</div>
 </div>
 <div class="section section-text" id="section_smtp_from_name">
-	<label class="heading" for="smtp_from_name"><?php _e('From Name', ADDONS_TEXT_DOMAIN); ?></label>
+	<label class="heading" for="smtp_from_name"><?php _e( 'From Name', ADDONS_TEXT_DOMAIN ); ?></label>
 	<div class="desc"><?php _e( 'The name which will be used as the <b>From Name</b> if it is not supplied to the mail function.', ADDONS_TEXT_DOMAIN ); ?></div>
 	<div class="option">
 		<div class="controls">

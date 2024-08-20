@@ -2,7 +2,7 @@
 
 \defined( 'ABSPATH' ) || die;
 
-$security_options = get_option( 'security__options', false );
+$security_options = get_option( 'security__options' );
 
 $hide_wp_version         = $security_options['hide_wp_version'] ?? '';
 $xml_rpc_off             = $security_options['xml_rpc_off'] ?? '';

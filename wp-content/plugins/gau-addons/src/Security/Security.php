@@ -25,7 +25,7 @@ final class Security {
 	// ------------------------------------------------------
 
 	private function init(): void {
-		$this->security_options = get_option( 'security__options', false );
+		$this->security_options = get_option( 'security__options' );
 
 		$this->_hide_wp_version();
 		$this->_disable_XMLRPC();

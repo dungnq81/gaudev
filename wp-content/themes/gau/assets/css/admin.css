@@ -88,6 +88,325 @@
   gap: 20px;
 }
 
+.\!w-200 {
+  width: 200px !important;
+}
+
+/** @todo font-size */
+:is(.fs-16, .fs\[16\]) {
+  font-weight: 16;
+}
+
+:is(.\!fs-16, .\!fs\[16\]) {
+  font-weight: 16 !important;
+}
+
+:is(.fs-17, .fs\[17\]) {
+  font-weight: 17;
+}
+
+:is(.\!fs-17, .\!fs\[17\]) {
+  font-weight: 17 !important;
+}
+
+:is(.fs-18, .fs\[18\]) {
+  font-weight: 18;
+}
+
+:is(.\!fs-18, .\!fs\[18\]) {
+  font-weight: 18 !important;
+}
+
+/** @todo gutter */
+.mt-0 {
+  margin-top: 0;
+}
+
+.\!mt-0 {
+  margin-top: 0 !important;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.\!mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.pt-0 {
+  padding-top: 0;
+}
+
+.\!pt-0 {
+  padding-top: 0 !important;
+}
+
+.pb-0 {
+  padding-bottom: 0;
+}
+
+.\!pb-0 {
+  padding-bottom: 0 !important;
+}
+
+.mt-5 {
+  margin-top: 0.3125rem;
+}
+
+.\!mt-5 {
+  margin-top: 0.3125rem !important;
+}
+
+.mb-5 {
+  margin-bottom: 0.3125rem;
+}
+
+.\!mb-5 {
+  margin-bottom: 0.3125rem !important;
+}
+
+.pt-5 {
+  padding-top: 0.3125rem;
+}
+
+.\!pt-5 {
+  padding-top: 0.3125rem !important;
+}
+
+.pb-5 {
+  padding-bottom: 0.3125rem;
+}
+
+.\!pb-5 {
+  padding-bottom: 0.3125rem !important;
+}
+
+.mt-10 {
+  margin-top: 0.625rem;
+}
+
+.\!mt-10 {
+  margin-top: 0.625rem !important;
+}
+
+.mb-10 {
+  margin-bottom: 0.625rem;
+}
+
+.\!mb-10 {
+  margin-bottom: 0.625rem !important;
+}
+
+.pt-10 {
+  padding-top: 0.625rem;
+}
+
+.\!pt-10 {
+  padding-top: 0.625rem !important;
+}
+
+.pb-10 {
+  padding-bottom: 0.625rem;
+}
+
+.\!pb-10 {
+  padding-bottom: 0.625rem !important;
+}
+
+.mt-15 {
+  margin-top: 0.9375rem;
+}
+
+.\!mt-15 {
+  margin-top: 0.9375rem !important;
+}
+
+.mb-15 {
+  margin-bottom: 0.9375rem;
+}
+
+.\!mb-15 {
+  margin-bottom: 0.9375rem !important;
+}
+
+.pt-15 {
+  padding-top: 0.9375rem;
+}
+
+.\!pt-15 {
+  padding-top: 0.9375rem !important;
+}
+
+.pb-15 {
+  padding-bottom: 0.9375rem;
+}
+
+.\!pb-15 {
+  padding-bottom: 0.9375rem !important;
+}
+
+.mt-20 {
+  margin-top: 1.25rem;
+}
+
+.\!mt-20 {
+  margin-top: 1.25rem !important;
+}
+
+.mb-20 {
+  margin-bottom: 1.25rem;
+}
+
+.\!mb-20 {
+  margin-bottom: 1.25rem !important;
+}
+
+.pt-20 {
+  padding-top: 1.25rem;
+}
+
+.\!pt-20 {
+  padding-top: 1.25rem !important;
+}
+
+.pb-20 {
+  padding-bottom: 1.25rem;
+}
+
+.\!pb-20 {
+  padding-bottom: 1.25rem !important;
+}
+
+.mt-25 {
+  margin-top: 1.5625rem;
+}
+
+.\!mt-25 {
+  margin-top: 1.5625rem !important;
+}
+
+.mb-25 {
+  margin-bottom: 1.5625rem;
+}
+
+.\!mb-25 {
+  margin-bottom: 1.5625rem !important;
+}
+
+.pt-25 {
+  padding-top: 1.5625rem;
+}
+
+.\!pt-25 {
+  padding-top: 1.5625rem !important;
+}
+
+.pb-25 {
+  padding-bottom: 1.5625rem;
+}
+
+.\!pb-25 {
+  padding-bottom: 1.5625rem !important;
+}
+
+.mt-30 {
+  margin-top: 1.875rem;
+}
+
+.\!mt-30 {
+  margin-top: 1.875rem !important;
+}
+
+.mb-30 {
+  margin-bottom: 1.875rem;
+}
+
+.\!mb-30 {
+  margin-bottom: 1.875rem !important;
+}
+
+.pt-30 {
+  padding-top: 1.875rem;
+}
+
+.\!pt-30 {
+  padding-top: 1.875rem !important;
+}
+
+.pb-30 {
+  padding-bottom: 1.875rem;
+}
+
+.\!pb-30 {
+  padding-bottom: 1.875rem !important;
+}
+
+/** @todo font weight */
+.fw-200 {
+  font-weight: 200;
+}
+
+.\!fw-200 {
+  font-weight: 200 !important;
+}
+
+.fw-300 {
+  font-weight: 300;
+}
+
+.\!fw-300 {
+  font-weight: 300 !important;
+}
+
+.fw-400 {
+  font-weight: 400;
+}
+
+.\!fw-400 {
+  font-weight: 400 !important;
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+.\!fw-500 {
+  font-weight: 500 !important;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.\!fw-600 {
+  font-weight: 600 !important;
+}
+
+.fw-700 {
+  font-weight: 700;
+}
+
+.\!fw-700 {
+  font-weight: 700 !important;
+}
+
+.fw-800 {
+  font-weight: 800;
+}
+
+.\!fw-800 {
+  font-weight: 800 !important;
+}
+
+.fw-900 {
+  font-weight: 900;
+}
+
+.\!fw-900 {
+  font-weight: 900 !important;
+}
+
 /** */
 #excerpt {
   display: block;

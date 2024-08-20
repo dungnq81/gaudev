@@ -17,10 +17,15 @@ $menu_options_page = apply_filters( 'gau_menu_options_page', [] );
 		<?php
 
 		$option_file = ADDONS_SRC_PATH . capitalized_slug( $slug ) . DIRECTORY_SEPARATOR . 'options.php';
+		$option_file = apply_filters( 'gau_content_option_file', $option_file );
+
         file_exists ( $option_file ) && include $option_file;
 
 		?>
 	</div>
 	<?php $i++; endforeach; ?>
 
+    <div class="save-bar">
+        <button type="submit" name="_submit_settings" class="button button-primary"><?php _e( 'Save Changes', ADDONS_TEXT_DOMAIN ); ?></button>
+    </div>
 </div>

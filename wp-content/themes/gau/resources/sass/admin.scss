@@ -68,6 +68,82 @@ $body-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", Arial, sans
     gap: 20px;
 }
 
+.\!w-200 {
+    width: 200px !important;
+}
+
+/** @todo font-size */
+$fs: 16;
+$fs_max: 18;
+
+@while $fs <= $fs_max {
+    :is(.fs-#{$fs}, .fs\[#{$fs}\]) {
+        font-weight: $fs;
+    }
+
+    :is(.\!fs-#{$fs}, .\!fs\[#{$fs}\]) {
+        font-weight: $fs !important;
+    }
+
+    $fs: $fs + 1;
+}
+
+/** @todo gutter */
+$count: 0;
+$count_max: 30;
+
+@while $count <= $count_max {
+    .mt-#{$count} {
+        margin-top: fs($count);
+    }
+
+    .\!mt-#{$count} {
+        margin-top: fs($count) !important;
+    }
+
+    .mb-#{$count} {
+        margin-bottom: fs($count);
+    }
+
+    .\!mb-#{$count} {
+        margin-bottom: fs($count) !important;
+    }
+
+    .pt-#{$count} {
+        padding-top: fs($count);
+    }
+
+    .\!pt-#{$count} {
+        padding-top: fs($count) !important;
+    }
+
+    .pb-#{$count} {
+        padding-bottom: fs($count);
+    }
+
+    .\!pb-#{$count} {
+        padding-bottom: fs($count) !important;
+    }
+
+    $count: $count + 5;
+}
+
+/** @todo font weight */
+$fw: 200;
+$fw_max: 900;
+
+@while $fw <= $fw_max {
+    .fw-#{$fw} {
+        font-weight: $fw;
+    }
+
+    .\!fw-#{$fw} {
+        font-weight: $fw !important;
+    }
+
+    $fw: $fw + 100;
+}
+
 /** */
 #excerpt {
     display: block;

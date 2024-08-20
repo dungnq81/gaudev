@@ -26,7 +26,7 @@ final class Addons {
 		add_action( 'plugins_loaded', [ &$this, 'i18n' ], 1 );
 		add_action( 'plugins_loaded', [ &$this, 'plugins_loaded' ], 11 );
 
-		add_action( 'admin_enqueue_scripts', [ &$this, 'admin_enqueue_scripts' ], 39 );
+		add_action( 'admin_enqueue_scripts', [ &$this, 'admin_enqueue_scripts' ], 39, 1 );
 
 		add_action( 'admin_menu', [ &$this, 'admin_menu' ] );
 		add_filter( 'menu_order', [ &$this, 'options_reorder_submenu' ] );
@@ -68,9 +68,16 @@ final class Addons {
 	/** ----------------------------------------------- */
 
 	/**
+	 * @param $hook
+	 *
 	 * @return void
 	 */
-	public function admin_enqueue_scripts(): void {
+	public function admin_enqueue_scripts( $hook ): void {
+		$version = ADDONS_VERSION;
+		if ( WP_DEBUG ) {
+			$version = date( 'YmdHis', current_time( 'U', 0 ) );
+		}
+
 		if ( ! wp_style_is( 'select2-style' ) ) {
 			wp_enqueue_style( 'select2-style', ADDONS_URL . 'assets/css/plugins/select2.min.css' );
 		}
@@ -80,8 +87,20 @@ final class Addons {
 			wp_script_add_data( "select2", "defer", true );
 		}
 
-		wp_enqueue_style( 'admin-addons-style', ADDONS_URL . 'assets/css/admin_addons.css', [], ADDONS_VERSION );
-		wp_enqueue_script( 'admin-addons', ADDONS_URL . 'assets/js/admin_addons.js', [ 'select2' ], ADDONS_VERSION, true );
+		wp_enqueue_style( 'admin-addons-style', ADDONS_URL . 'assets/css/admin_addons.css', [], $version );
+		wp_enqueue_script( 'admin-addons', ADDONS_URL . 'assets/js/admin_addons.js', [ 'select2' ], $version, true );
+
+		// options_enqueue_assets
+		$allowed_pages = 'toplevel_page_gau-settings';
+		if ( $allowed_pages === $hook ) {
+			$codemirror_settings = [
+				'codemirror_css'  => wp_enqueue_code_editor( [ 'type' => 'text/css' ] ),
+				'codemirror_html' => wp_enqueue_code_editor( [ 'type' => 'text/html' ] ),
+			];
+
+			wp_enqueue_style( 'wp-codemirror' );
+			wp_localize_script( 'admin-addons', 'codemirror_settings', $codemirror_settings );
+		}
 	}
 
 	/** ----------------------------------------------- */
@@ -108,13 +127,22 @@ final class Addons {
 			'customize.php'
 		);
 
-		$submenu_info = add_submenu_page(
+		$submenu_log = add_submenu_page(
 			'gau-settings',
 			__( 'Server Info', ADDONS_TEXT_DOMAIN ),
 			__( 'Server Info', ADDONS_TEXT_DOMAIN ),
 			'manage_options',
 			'server-info',
 			[ &$this->option_page, '_gau_server_info_callback', ]
+		);
+
+		$submenu_info = add_submenu_page(
+			'gau-settings',
+			__( 'Activity Log', ADDONS_TEXT_DOMAIN ),
+			__( 'Activity Log', ADDONS_TEXT_DOMAIN ),
+			'manage_options',
+			'activity-log',
+			[ &$this->option_page, '_gau_activity_log_callback', ]
 		);
 	}
 
