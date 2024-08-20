@@ -80,10 +80,13 @@ $recaptcha_allowlist_ips = $recaptcha_options['recaptcha_allowlist_ips'] ?? [];
 	<div class="option">
 		<div class="controls">
 			<div class="select_wrapper">
-				<select multiple class="select !w[100%] select2-tags" name="recaptcha_allowlist_ips[]" id="recaptcha_allowlist_ips">
-                    <?php foreach ( $recaptcha_allowlist_ips as $ip ) : ?>
-                    <option value="<?=esc_attr( $ip )?>" <?php in_array_checked( $recaptcha_allowlist_ips, $ip, true, 'selected' ); ?>><?=$ip?></option>
-                    <?php endforeach; ?>
+				<select multiple class="select !w[100%] select2-ips" name="recaptcha_allowlist_ips[]" id="recaptcha_allowlist_ips">
+					<?php
+					if ( $recaptcha_allowlist_ips ) :
+						foreach ( (array) $recaptcha_allowlist_ips as $ip ) :
+                    ?>
+                    <option selected value="<?=esc_attr( $ip )?>"><?=$ip?></option>
+                    <?php endforeach; endif; ?>
 				</select>
 			</div>
 		</div>

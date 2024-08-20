@@ -12,6 +12,10 @@ $menu_options_page = apply_filters( 'gau_menu_options_page', [] );
 	$i = 0;
 	foreach ( $menu_options_page as $slug => $value ) :
 		$show_class = ( 0 === $i ) ? ' show' : '';
+
+		if ( 'woocommerce' === (string) $slug && ! check_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+			continue;
+		}
 	?>
 	<div id="<?=$slug?>_settings" class="group tabs-panel<?=$show_class?>">
 		<?php

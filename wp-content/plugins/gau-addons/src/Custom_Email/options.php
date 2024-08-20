@@ -1,6 +1,8 @@
 <?php
 
-$emails_options = get_option( 'emails__options' );
+defined( 'ABSPATH' ) || die;
+
+$emails_options = get_option( 'custom_email__options' );
 $filter_custom_emails = filter_setting_options( 'custom_emails', [] );
 
 ?>

@@ -265,19 +265,19 @@ if ( ! function_exists( 'update_custom_post_option' ) ) {
 if ( ! function_exists( 'strip_all_tags' ) ) {
 	/**
 	 * @param $string
-	 * @param bool $remove_js
+	 * @param bool $remove_js_css
 	 * @param bool $flatten
-	 * @param $allowed_tags
+	 * @param null $allowed_tags
 	 *
 	 * @return string
 	 */
-	function strip_all_tags( $string, bool $remove_js = true, bool $flatten = true, $allowed_tags = null ): string {
+	function strip_all_tags( $string, bool $remove_js_css = true, bool $flatten = true, $allowed_tags = null ): string {
 
 		if ( ! is_scalar( $string ) ) {
 			return '';
 		}
 
-		if ( $remove_js ) {
+		if ( $remove_js_css ) {
 			$string = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', ' ', $string );
 		}
 

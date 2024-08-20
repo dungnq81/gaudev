@@ -24,7 +24,7 @@ final class Custom_Sorting {
 	private function init(): void {
 
 		// setup db
-		if ( ! get_theme_mod( '_custom_order_' ) ) {
+		if ( ! get_theme_mod( '_custom_sorting_' ) ) {
 			global $wpdb;
 
 			if ( ! $wpdb->query( "DESCRIBE {$wpdb->terms} `term_order`" ) ) {
@@ -32,11 +32,12 @@ final class Custom_Sorting {
 				$wpdb->query( $query );
 			}
 
-			set_theme_mod( '_custom_order_', 1 );
+			set_theme_mod( '_custom_sorting_', 1 );
 		}
 
 		// Check custom order
-		$custom_order_options  = get_option( 'custom_order__options', [] );
+		$custom_order_options  = get_option( 'custom_sorting__options', [] );
+
 		$this->order_post_type = $custom_order_options['order_post_type'] ?? [];
 		$this->order_taxonomy  = $custom_order_options['order_taxonomy'] ?? [];
 
@@ -80,7 +81,7 @@ final class Custom_Sorting {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts( $hook_suffix ): void {
-		if ( $this->_check_custom_order_script() ) {
+		if ( $this->_check_custom_sorting_script() ) {
 			wp_enqueue_script(
 				'addon-custom-order',
 				ADDONS_URL . 'assets/js/custom_order.js',
@@ -122,9 +123,7 @@ final class Custom_Sorting {
 					)
 				);
 
-				if ( (int) $result[0]->cnt === 0 ||
-				     ( $result[0]->cnt === $result[0]->max && (int) $result[0]->min === 1 )
-				) {
+				if ( (int) $result[0]->cnt === 0 || ( $result[0]->cnt === $result[0]->max && (int) $result[0]->min === 1 ) ) {
 					continue;
 				}
 
@@ -155,9 +154,7 @@ final class Custom_Sorting {
 					)
 				);
 
-				if ( (int) $result[0]->cnt === 0 ||
-				     ( $result[0]->cnt === $result[0]->max && (int) $result[0]->min === 1 )
-				) {
+				if ( (int) $result[0]->cnt === 0 || ( $result[0]->cnt === $result[0]->max && (int) $result[0]->min === 1 ) ) {
 					continue;
 				}
 
@@ -380,10 +377,7 @@ final class Custom_Sorting {
 
 		if ( is_admin() && ! wp_doing_ajax() ) {
 
-			if ( isset( $wp_query->query['post_type'] ) &&
-			     ! isset( $_GET['orderby'] ) &&
-			     in_array( $wp_query->query['post_type'], $objects, false )
-			) {
+			if ( isset( $wp_query->query['post_type'] ) && ! isset( $_GET['orderby'] ) && in_array( $wp_query->query['post_type'], $objects, false ) ) {
 				if ( ! $wp_query->get( 'orderby' ) ) {
 					$wp_query->set( 'orderby', 'menu_order' );
 				}
@@ -512,7 +506,7 @@ final class Custom_Sorting {
 	/**
 	 * @return bool
 	 */
-	private function _check_custom_order_script(): bool {
+	private function _check_custom_sorting_script(): bool {
 		$active = false;
 
 		if ( empty( $this->order_post_type ) && empty( $this->order_taxonomy ) ) {
@@ -616,9 +610,7 @@ final class Custom_Sorting {
 					)
 				);
 
-				if ( $result[0]->cnt === 0 ||
-				     $result[0]->cnt === $result[0]->max
-				) {
+				if ( $result[0]->cnt === 0 || $result[0]->cnt === $result[0]->max ) {
 					continue;
 				}
 
@@ -673,6 +665,6 @@ final class Custom_Sorting {
 		];
 
 		update_option( 'custom_order__options', $custom_order_options );
-		set_theme_mod( '_custom_order_', 0 );
+		set_theme_mod( '_custom_sorting_', 0 );
 	}
 }

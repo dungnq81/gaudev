@@ -5,6 +5,7 @@ namespace Addons\Option_Page;
 use Addons\Base\Singleton;
 
 use Addons\Base_Slug\Base_Slug;
+use Addons\Custom_Sorting\Custom_Sorting;
 use Addons\Optimizer\Browser_Cache;
 use Addons\Optimizer\Gzip;
 use Addons\Optimizer\Ssl;
@@ -264,7 +265,7 @@ final class Option_Page {
 
 		/** ---------------------------------------- */
 
-        /** Custom Email */
+		/** Custom Email */
 		$email_options = [];
 		$custom_emails = filter_setting_options( 'custom_emails', [] );
 
@@ -277,12 +278,80 @@ final class Option_Page {
 				$email_options[ $i ] = $email;
 			}
 
-			update_option( 'emails__options', $email_options );
+			update_option( 'custom_email__options', $email_options );
 		}
 
 		/** ---------------------------------------- */
 
+		/** Custom Sorting */
+		$order_reset = ! empty( $data['order_reset'] ) ? sanitize_text_field( $data['order_reset'] ) : '';
+		if ( empty( $order_reset ) ) {
+			$custom_order_options = [
+				'order_post_type' => ! empty( $data['order_post_type'] ) ? array_map( 'sanitize_text_field', $data['order_post_type'] ) : [],
+				'order_taxonomy'  => ! empty( $data['order_taxonomy'] ) ? array_map( 'sanitize_text_field', $data['order_taxonomy'] ) : [],
+			];
 
+			update_option( 'custom_sorting__options', $custom_order_options );
+
+			( Custom_Sorting::get_instance() )->update_options();
+
+		} else {
+			( Custom_Sorting::get_instance() )->reset_all();
+		}
+
+		/** ---------------------------------------- */
+
+        /** reCAPTCHA */
+		$recaptcha_options = [
+			'recaptcha_v2_site_key'   => ! empty( $data['recaptcha_v2_site_key'] ) ? sanitize_text_field( $data['recaptcha_v2_site_key'] ) : '',
+			'recaptcha_v2_secret_key' => ! empty( $data['recaptcha_v2_secret_key'] ) ? sanitize_text_field( $data['recaptcha_v2_secret_key'] ) : '',
+			'recaptcha_v3_site_key'   => ! empty( $data['recaptcha_v3_site_key'] ) ? sanitize_text_field( $data['recaptcha_v3_site_key'] ) : '',
+			'recaptcha_v3_secret_key' => ! empty( $data['recaptcha_v3_secret_key'] ) ? sanitize_text_field( $data['recaptcha_v3_secret_key'] ) : '',
+			'recaptcha_v3_score'      => ! empty( $data['recaptcha_v3_score'] ) ? sanitize_text_field( $data['recaptcha_v3_score'] ) : '0.5',
+			'recaptcha_global'        => ! empty( $data['recaptcha_global'] ) ? sanitize_text_field( $data['recaptcha_global'] ) : '',
+			'recaptcha_allowlist_ips' => ! empty( $data['recaptcha_allowlist_ips'] ) ? array_map( 'sanitize_text_field', $data['recaptcha_allowlist_ips'] ) : [],
+		];
+
+		update_option( 'recaptcha__options', $recaptcha_options );
+
+		/** ---------------------------------------- */
+
+        /** WooCommerce */
+		if ( check_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+			$woocommerce_options = [
+				'remove_legacy_coupon'    => ! empty( $data['remove_legacy_coupon'] ) ? sanitize_text_field( $data['remove_legacy_coupon'] ) : '',
+				'woocommerce_jsonld'      => ! empty( $data['woocommerce_jsonld'] ) ? sanitize_text_field( $data['woocommerce_jsonld'] ) : '',
+				'woocommerce_default_css' => ! empty( $data['woocommerce_default_css'] ) ? sanitize_text_field( $data['woocommerce_default_css'] ) : '',
+			];
+
+			update_option( 'woocommerce__options', $woocommerce_options );
+
+			if ( $woocommerce_options['remove_legacy_coupon'] ) {
+				global $wpdb;
+
+				$wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "wc_admin_notes SET status=%s WHERE name=%s", 'actioned', 'wc-admin-coupon-page-moved' ) );
+				$wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "wc_admin_note_actions SET status=%s WHERE name=%s", 'actioned', 'remove-legacy-coupon-menu' ) );
+			}
+		}
+
+		/** ---------------------------------------- */
+
+		/** Custom Scripts */
+		$html_header      = $data['html_header'] ?? '';
+		$html_footer      = $data['html_footer'] ?? '';
+		$html_body_top    = $data['html_body_top'] ?? '';
+		$html_body_bottom = $data['html_body_bottom'] ?? '';
+
+		$_header      = update_custom_post_option( $html_header, 'html_header', 'text/html', true );
+		$_footer      = update_custom_post_option( $html_footer, 'html_footer', 'text/html', true );
+		$_body_top    = update_custom_post_option( $html_body_top, 'html_body_top', 'text/html', true );
+		$_body_bottom = update_custom_post_option( $html_body_bottom, 'html_body_bottom', 'text/html', true );
+
+		/** ---------------------------------------- */
+
+        /** Custom CSS */
+		$html_custom_css = $data['html_custom_css'] ?? '';
+		$_css = update_custom_post_option( $html_custom_css, 'gau_css', 'text/css' );
 
 		/** ---------------------------------------- */
 
@@ -297,9 +366,7 @@ final class Option_Page {
 	/**
 	 * @return void
 	 */
-	public function _gau_activity_log_callback(): void {
-
-	}
+	public function _gau_activity_log_callback(): void {}
 
 	/** ----------------------------------------------- */
 

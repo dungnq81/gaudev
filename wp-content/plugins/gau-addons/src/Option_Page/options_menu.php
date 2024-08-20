@@ -22,6 +22,10 @@ $menu_options_page = apply_filters( 'gau_menu_options_page', [] );
         $i = 0;
         foreach ( $menu_options_page as $slug => $value ) :
             $current = ( 0 === $i ) ? ' class="current"' : '';
+
+            if ( 'woocommerce' === (string) $slug && ! check_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+                continue;
+            }
         ?>
         <li class="<?=$slug?>-settings">
             <a<?=$current?> title="<?= esc_attr( $value ) ?>" href="#<?=$slug?>_settings"><?= $value ?></a>
