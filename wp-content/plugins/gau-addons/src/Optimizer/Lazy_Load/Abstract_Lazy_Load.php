@@ -73,10 +73,12 @@ abstract class Abstract_Lazy_Load {
 		$replace = [];
 
 		// Check for specific asset being excluded.
+		$optimizer_options = get_option( 'optimizer__options' );
+		$exclude_lazyload = $optimizer_options['exclude_lazyload'] ?? [];
 		$excluded_all = array_unique(
-			(array) array_merge(
+			array_merge(
 				filter_setting_options( 'lazy_load_exclude', [] ),
-				optimizer_options( 'exclude_lazyload', [] )
+				$exclude_lazyload
 			)
 		);
 

@@ -11,7 +11,6 @@ $social_follows_links = filter_setting_options( 'social_follows_links', [] );
 
 if ( ! empty( $social_follows_links ) ) :
 	foreach ( $social_follows_links as $key => $social ) :
-
 		if ( empty( $social['name'] ) || empty( $social['icon'] ) ) {
 			continue;
 		}

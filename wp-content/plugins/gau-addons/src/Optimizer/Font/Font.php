@@ -17,6 +17,8 @@ final class Font {
 
 	use Singleton;
 
+	public mixed $optimizer_options = [];
+
 	// ------------------------------------------------------
 
 	public ?string $assets_dir = null;
@@ -48,6 +50,7 @@ final class Font {
 	// ------------------------------------------------------
 
 	private function init(): void {
+		$this->optimizer_options = get_option( 'optimizer__options' );
 
 		$this->_set_assets_directory_path();
 		$this->_setup_wp_filesystem();
@@ -82,7 +85,25 @@ final class Font {
 	 * @return void
 	 */
 	private function _setup_wp_filesystem(): void {
-		$this->wp_filesystem = setup_wp_filesystem();
+		$this->wp_filesystem = $this->_wp_filesystem();
+	}
+
+	// --------------------------------------------------
+
+	/**
+	 * @return mixed
+	 */
+	private function _wp_filesystem(): mixed {
+		global $wp_filesystem;
+
+		// Initialize the WP filesystem, no more using 'file-put-contents' function.
+		// Front-end only. In the back-end; its already included
+		if ( empty( $wp_filesystem ) ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		return $wp_filesystem;
 	}
 
 	// ------------------------------------------------------
@@ -123,7 +144,7 @@ final class Font {
 		$html = $this->font_preload( $html );
 
 		// get font optimize options
-		$font_optimize = optimizer_options( 'font_optimize', 0 );
+		$font_optimize = $this->optimizer_options[ 'font_optimize' ] ?? 0;
 
 		// Bail if there are no fonts, no options or if there is only one font.
 		if ( empty( $font_optimize ) || empty( $fonts ) ) {
@@ -334,7 +355,7 @@ final class Font {
 		}
 
 		// Force combined tag
-		$font_combined_css = optimizer_options( 'font_combined_css', 0 );
+		$font_combined_css = $this->optimizer_options[ 'font_combined_css' ] ?? 0;
 		if ( ! empty( $font_combined_css ) ) {
 			return implode( '', $combined_tags );
 		}
@@ -353,7 +374,7 @@ final class Font {
 	public function font_preload( $html ): mixed {
 
 		// Check if there are any urls inserted by the user.
-		$urls = optimizer_options( 'font_preload', false );
+		$urls = $this->optimizer_options[ 'font_preload' ] ?? false;
 
 		// Return, if no url's are set by the user.
 		if ( empty( $urls ) ) {

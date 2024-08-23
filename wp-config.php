@@ -72,15 +72,19 @@ $table_prefix = 'MTRlZG_';
  *
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
-const WP_DEBUG         = true;
-const WP_DEBUG_LOG     = true;
-const WP_DEBUG_DISPLAY = true;
+const WP_DEBUG = true;
+//const WP_DEBUG_LOG     = true;
+//const WP_DEBUG_DISPLAY = true;
 
 /* Add any custom values between this line and the "stop editing" line. */
 
 if ( ! empty( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
 	$_SERVER['HTTPS'] = 'on';
 }
+
+//if ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) {
+//	@ini_set( 'session.cookie_secure', '1' );
+//}
 
 const TRACKING = false;
 //if ( ! defined( 'FS_METHOD' ) ) {

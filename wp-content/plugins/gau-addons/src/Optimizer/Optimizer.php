@@ -24,9 +24,9 @@ final class Optimizer {
 
 	private function init(): void {
 
-		( Heartbeat::get_instance() );
-		( SVG::get_instance() );
-		( Lazy_Load::get_instance() );
 		( Attached_Media_Cleaner::get_instance() );
+		( Heartbeat::get_instance() );
+		( Lazy_Load::get_instance() );
+		( SVG::get_instance() );
 	}
 }

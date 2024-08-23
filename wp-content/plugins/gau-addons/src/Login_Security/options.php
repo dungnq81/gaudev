@@ -35,8 +35,7 @@ if ( $login_security_default['enable_custom_login_options'] ) :
             }
 
             ?>
-			<input disabled value="<?php echo esc_attr( $custom_login_url ); ?>" class="input" type="text" id="custom_login_url"
-                   name="custom_login_url" placeholder="<?=esc_attr( $default_login )?>">
+			<input disabled value="<?php echo esc_attr( $custom_login_url ); ?>" class="input" type="text" id="custom_login_url" name="custom_login_url" placeholder="<?=esc_attr( $default_login )?>">
 		</div>
 	</div>
 </div>

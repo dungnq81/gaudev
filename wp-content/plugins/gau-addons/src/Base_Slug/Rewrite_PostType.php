@@ -8,7 +8,7 @@ class Rewrite_PostType {
 	private mixed $base_slug_post_type;
 
 	public function __construct() {
-		$custom_base_slug_options  = get_option( 'custom_base_slug__options', [] );
+		$custom_base_slug_options  = get_option( 'base_slug__options', [] );
 		$this->base_slug_post_type = $custom_base_slug_options['base_slug_post_type'] ?? [];
 	}
 
@@ -22,10 +22,8 @@ class Rewrite_PostType {
 
 			add_filter( 'post_type_link', [ &$this, 'post_type_link' ], 10, 2 ); // remove base slug from URLs
 
-			//if ( ! is_admin() ) {
-				add_action( 'wp', [ &$this, 'redirect' ] ); // auto redirect old URLs to non-base versions
-				add_action( 'request', [ &$this, 'request' ], 11, 1 ); // Permalink Manager.
-			//}
+			add_action( 'wp', [ &$this, 'redirect' ] ); // auto redirect old URLs to non-base versions
+			add_action( 'request', [ &$this, 'request' ], 11, 1 ); // Permalink Manager.
 		}
 	}
 
@@ -79,9 +77,7 @@ class Rewrite_PostType {
 			$new_url  = get_permalink();
 			$real_url = get_current_url();
 
-			if ( ! str_contains( $real_url, $new_url ) &&
-			     substr_count( $new_url, '/' ) !== substr_count( $real_url, '/' )
-			) {
+			if ( ! str_contains( $real_url, $new_url ) && substr_count( $new_url, '/' ) !== substr_count( $real_url, '/' ) ) {
 				remove_filter( 'post_type_link', [ &$this, 'post_type_link' ], 10 );
 				$old_url = get_permalink();
 
@@ -126,9 +122,7 @@ class Rewrite_PostType {
 
 		// test for posts and pages
 		$post_data = get_page_by_path( $url_request, OBJECT, 'post' );
-		if ( ! ( $post_data instanceof \WP_Post ) &&
-		     ! is_object( get_page_by_path( $url_request ) )
-		) {
+		if ( ! ( $post_data instanceof \WP_Post ) && ! is_object( get_page_by_path( $url_request ) ) ) {
 			$post_data = get_page_by_path( $url_request, OBJECT, $this->base_slug_post_type );
 			if ( is_object( $post_data ) ) {
 				$post_name = $post_data->post_name;

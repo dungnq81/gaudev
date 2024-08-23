@@ -27,10 +27,7 @@ final class Illegal_Users {
 	 * @return array            Default + custom illegal usernames.
 	 */
 	public function get_illegal_usernames( array $usernames = [] ): array {
-		$illegal_usernames = apply_filters(
-			'_illegal_users',
-			$usernames
-		);
+		$illegal_usernames = apply_filters( '_illegal_users', $usernames );
 
 		return array_map(
 			'strtolower',

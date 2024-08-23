@@ -29,12 +29,36 @@ trait Wp {
 	// -------------------------------------------------------------
 
 	/**
+	 * @param $js
+	 * @param bool $debug_check
+	 *
+	 * @return mixed|string
+	 */
+	public static function JSMinify( $js, bool $debug_check = true ): mixed {
+		if ( empty( $js ) ) {
+			return $js;
+		}
+
+		if ( $debug_check && WP_DEBUG ) {
+			return $js;
+		}
+
+		if ( class_exists( Minify\JS::class ) ) {
+			return ( new Minify\JS() )->add( $js )->minify();
+		}
+
+		return $js;
+	}
+
+	// -------------------------------------------------------------
+
+	/**
 	 * @param $css
 	 * @param bool $debug_check
 	 *
-	 * @return string
+	 * @return mixed|string
 	 */
-	public static function CSSMinify( $css, bool $debug_check = true ): string {
+	public static function CSSMinify( $css, bool $debug_check = true ): mixed {
 		if ( empty( $css ) ) {
 			return $css;
 		}

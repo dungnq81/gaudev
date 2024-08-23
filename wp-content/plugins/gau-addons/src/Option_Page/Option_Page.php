@@ -28,8 +28,77 @@ final class Option_Page {
 	 */
 	private function init(): void {
 
+		add_action( 'admin_menu', [ &$this, 'admin_menu' ] );
+		add_filter( 'menu_order', [ &$this, 'options_reorder_submenu' ] );
+		add_filter( 'custom_menu_order', '__return_true' );
+
 		// ajax for settings
 		add_action( 'wp_ajax_submit_settings', [ &$this, 'ajax_submit_settings' ] );
+	}
+
+	/** ----------------------------------------------- */
+
+	/**
+	 * @return void
+	 */
+	public function admin_menu(): void {
+		$menu_setting = add_menu_page(
+			__( 'Gau Settings', ADDONS_TEXT_DOMAIN ),
+			__( 'Gau', ADDONS_TEXT_DOMAIN ),
+			'manage_options',
+			'gau-settings',
+			[ &$this, '_gau_menu_callback' ],
+			'dashicons-admin-settings',
+			80
+		);
+
+		$submenu_customize = add_submenu_page(
+			'gau-settings',
+			__( 'Advanced', ADDONS_TEXT_DOMAIN ),
+			__( 'Advanced', ADDONS_TEXT_DOMAIN ),
+			'manage_options',
+			'customize.php'
+		);
+
+		$submenu_log = add_submenu_page(
+			'gau-settings',
+			__( 'Server Info', ADDONS_TEXT_DOMAIN ),
+			__( 'Server Info', ADDONS_TEXT_DOMAIN ),
+			'manage_options',
+			'server-info',
+			[ &$this, '_gau_server_info_callback', ]
+		);
+
+		$submenu_info = add_submenu_page(
+			'gau-settings',
+			__( 'Activity Log', ADDONS_TEXT_DOMAIN ),
+			__( 'Activity Log', ADDONS_TEXT_DOMAIN ),
+			'manage_options',
+			'activity-log',
+			[ &$this, '_gau_activity_log_callback', ]
+		);
+	}
+
+	/** ----------------------------------------------- */
+
+	/**
+	 * Reorder the submenu pages.
+	 *
+	 * @param array $menu_order The WP menu order.
+	 */
+	public function options_reorder_submenu( array $menu_order ): array {
+
+		// Load the global submenu.
+		global $submenu;
+
+		if ( empty( $submenu['gau-settings'] ) ) {
+			return $menu_order;
+		}
+
+		// Change menu title
+		$submenu['gau-settings'][0][0] = __( 'Settings', ADDONS_TEXT_DOMAIN );
+
+		return $menu_order;
 	}
 
 	/** ----------------------------------------------- */
@@ -72,13 +141,14 @@ final class Option_Page {
 			if ( ! empty( $data['smtp_password'] ) ) {
 
 				// This removes slash (automatically added by WordPress) from the password when apostrophe is present
-				$smtp_password = base64_encode( wp_unslash( sanitize_text_field( $data['smtp_password'] ) ) );
+				$smtp_password = base64_encode( wp_unslash( trim( $data['smtp_password'] ) ) );
 			}
 
 			$smtp_encryption               = ! empty( $data['smtp_encryption'] ) ? sanitize_text_field( $data['smtp_encryption'] ) : '';
 			$smtp_port                     = ! empty( $data['smtp_port'] ) ? sanitize_text_field( $data['smtp_port'] ) : '';
 			$smtp_from_email               = ! empty( $data['smtp_from_email'] ) ? sanitize_email( $data['smtp_from_email'] ) : '';
 			$smtp_from_name                = ! empty( $data['smtp_from_name'] ) ? sanitize_text_field( $data['smtp_from_name'] ) : '';
+			$smtp_force_from_address       = ! empty( $data['smtp_force_from_address'] ) ? sanitize_text_field( $data['smtp_force_from_address'] ) : '';
 			$smtp_disable_ssl_verification = ! empty( $data['smtp_disable_ssl_verification'] ) ? sanitize_text_field( $data['smtp_disable_ssl_verification'] ) : '';
 
 			$smtp_options = [
@@ -89,6 +159,7 @@ final class Option_Page {
 				'smtp_port'                     => $smtp_port,
 				'smtp_from_email'               => $smtp_from_email,
 				'smtp_from_name'                => $smtp_from_name,
+				'smtp_force_from_address'       => $smtp_force_from_address,
 				'smtp_disable_ssl_verification' => $smtp_disable_ssl_verification,
 			];
 
@@ -148,11 +219,7 @@ final class Option_Page {
 		$optimizer_options_current = get_option( 'optimizer__options' );
 		$https_enforce_current     = $optimizer_options_current['https_enforce'] ?? 0;
 
-		$exclude_lazyload = ! empty( $data['exclude_lazyload'] ) ? explode_multi( [
-			',',
-			' ',
-			PHP_EOL,
-		], $data['exclude_lazyload'] ) : [ 'no-lazy' ];
+		$exclude_lazyload = ! empty( $data['exclude_lazyload'] ) ? explode_multi( [ ',', ' ', PHP_EOL, ], $data['exclude_lazyload'] ) : [ 'no-lazy' ];
 		$font_preload     = ! empty( $data['font_preload'] ) ? explode_multi( [ ',', ' ', PHP_EOL ], $data['font_preload'] ) : [];
 		$dns_prefetch     = ! empty( $data['dns_prefetch'] ) ? explode_multi( [ ',', ' ', PHP_EOL ], $data['dns_prefetch'] ) : [];
 
@@ -235,7 +302,7 @@ final class Option_Page {
 
 		/** ---------------------------------------- */
 
-		/** Socials */
+		/** Social */
 		$social_options = [];
 		foreach ( filter_setting_options( 'social_follows_links', [] ) as $i => $item ) {
 			$social_options[ $i ] = [
@@ -255,7 +322,7 @@ final class Option_Page {
 				'base_slug_taxonomy'  => ! empty( $data['base_slug_taxonomy'] ) ? array_map( 'sanitize_text_field', $data['base_slug_taxonomy'] ) : [],
 			];
 
-			update_option( 'custom_base_slug__options', $custom_base_slug_options );
+			update_option( 'base_slug__options', $custom_base_slug_options );
 
 			( Base_Slug::get_instance() )->flush_rules();
 

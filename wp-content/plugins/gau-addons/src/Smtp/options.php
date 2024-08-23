@@ -5,13 +5,14 @@ defined( 'ABSPATH' ) || die;
 $smtp_options = get_option( 'smtp__options' );
 
 $smtp_host                     = $smtp_options['smtp_host'] ?? '';
-$smtp_auth                     = $smtp_options['smtp_auth'] ?? '';
+$smtp_auth                     = $smtp_options['smtp_auth'] ?? 'false';
 $smtp_username                 = $smtp_options['smtp_username'] ?? '';
 $smtp_password                 = $smtp_options['smtp_password'] ?? '';
-$smtp_encryption               = $smtp_options['smtp_encryption'] ?? '';
+$smtp_encryption               = $smtp_options['smtp_encryption'] ?? 'none';
 $smtp_port                     = $smtp_options['smtp_port'] ?? '';
 $smtp_from_email               = $smtp_options['smtp_from_email'] ?? '';
 $smtp_from_name                = $smtp_options['smtp_from_name'] ?? '';
+$smtp_force_from_address       = $smtp_options['smtp_force_from_address'] ?? '';
 $smtp_disable_ssl_verification = $smtp_options['smtp_disable_ssl_verification'] ?? '';
 
 ?>
@@ -99,6 +100,17 @@ $smtp_disable_ssl_verification = $smtp_options['smtp_disable_ssl_verification'] 
 		</div>
 	</div>
 </div>
+
+<div class="section section-checkbox" id="section_smtp_force_from_address">
+    <label class="heading" for="smtp_force_from_address"><?php _e( 'Force From Address', ADDONS_TEXT_DOMAIN ); ?></label>
+    <div class="option">
+        <div class="controls">
+            <input type="checkbox" class="checkbox" name="smtp_force_from_address" id="smtp_force_from_address" <?php echo checked( $smtp_force_from_address, 1 ); ?> value="1">
+        </div>
+        <div class="explain"><?php _e( 'The From address in the settings will be set for all outgoing email messages.', ADDONS_TEXT_DOMAIN ); ?></div>
+    </div>
+</div>
+
 <div class="section section-checkbox" id="section_smtp_disable_ssl_verification">
 	<label class="heading" for="smtp_disable_ssl_verification"><?php _e( 'Disable SSL Certificate Verification', ADDONS_TEXT_DOMAIN ); ?></label>
 	<div class="option">

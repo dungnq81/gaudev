@@ -19,11 +19,11 @@ mix.sass(`${resources}/sass/admin_addons.scss`, `${assets}/css`);
 mix.js(`${resources}/js/custom_sorting.js`, `${assets}/js`)
     .js(`${resources}/js/lazyload.js`, `${assets}/js`)
     .js(`${resources}/js/recaptcha.js`, `${assets}/js`)
+    .js(`${resources}/js/select2.js`, `${assets}/js/plugins`)
     .js(`${resources}/js/admin_addons.js`, `${assets}/js`);
 
 // Copy directories
 directoriesToCopy.forEach((dir) => mix.copyDirectory(dir.from, dir.to));
 
-// Additional JS file
+// Additional file
 mix.copy(`${node_modules}/select2/dist/css/select2.min.css`, `${assets}/css/plugins`);
-mix.copy(`${node_modules}/select2/dist/js/select2.full.min.js`, `${assets}/js/plugins`);

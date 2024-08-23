@@ -48,15 +48,21 @@ final class Admin {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts(): void {
-		wp_enqueue_style( "admin-style", ASSETS_URL . "css/admin.css", [], THEME_VERSION );
+		$version = THEME_VERSION;
+		if ( WP_DEBUG ) {
+			$version = date( 'YmdHis', current_time( 'U', 0 ) );
+		}
 
-		wp_register_script( 'pace-js', ASSETS_URL . 'js/plugins/pace.min.js', [], false, true );
-		wp_enqueue_script( 'admin', ASSETS_URL . 'js/admin.js', [ 'pace-js', 'select2' ], THEME_VERSION, true );
+		wp_enqueue_style( "admin-style", ASSETS_URL . "css/admin.css", [], $version );
 
+		wp_register_script( 'pace-js', ASSETS_URL . 'js/plugins/pace.min.js', [], $version, true );
 		$pace_js_inline = 'paceOptions = {startOnPageLoad:!1}';
 		wp_add_inline_script( 'pace-js', $pace_js_inline, 'before' );
 
-		wp_enqueue_script( 'fontawesome-kit', 'https://kit.fontawesome.com/09f86c70cd.js', [], false, true );
+		wp_enqueue_script( 'admin', ASSETS_URL . 'js/admin.js', [ 'jquery-core', 'pace-js' ], $version, true );
+		wp_script_add_data( 'admin', 'defer', true );
+
+		wp_enqueue_script( 'fontawesome-kit', 'https://kit.fontawesome.com/09f86c70cd.js', [], $version, true );
 		wp_script_add_data( 'fontawesome-kit', 'defer', true );
 	}
 

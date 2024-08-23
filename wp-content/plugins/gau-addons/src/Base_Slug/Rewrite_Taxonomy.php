@@ -9,7 +9,7 @@ class Rewrite_Taxonomy {
 	private mixed $base_slug_taxonomy;
 
 	public function __construct() {
-		$custom_base_slug_options = get_option( 'custom_base_slug__options', [] );
+		$custom_base_slug_options = get_option( 'base_slug__options', [] );
 		$this->base_slug_taxonomy = $custom_base_slug_options['base_slug_taxonomy'] ?? [];
 	}
 
@@ -20,19 +20,16 @@ class Rewrite_Taxonomy {
 	 */
 	public function run(): void {
 		if ( ! empty( $this->base_slug_taxonomy ) ) {
-
 			add_filter( 'term_link', [ &$this, 'term_link' ], 10, 3 );
 
-			//if ( ! is_admin() ) {
-				foreach ( $this->base_slug_taxonomy as $base_slug ) {
-					add_action( 'created_' . $base_slug, [ &$this, 'flush_rules' ] );
-					add_action( 'delete_' . $base_slug, [ &$this, 'flush_rules' ] );
-					add_action( 'edited_' . $base_slug, [ &$this, 'flush_rules' ] );
-				}
+			foreach ( $this->base_slug_taxonomy as $base_slug ) {
+				add_action( 'created_' . $base_slug, [ &$this, 'flush_rules' ] );
+				add_action( 'delete_' . $base_slug, [ &$this, 'flush_rules' ] );
+				add_action( 'edited_' . $base_slug, [ &$this, 'flush_rules' ] );
+			}
 
-				add_filter( 'query_vars', [ &$this, 'query_vars' ] );
-				add_filter( 'request', [ &$this, 'request' ] );
-			//}
+			add_filter( 'query_vars', [ &$this, 'query_vars' ] );
+			add_filter( 'request', [ &$this, 'request' ] );
 		}
 	}
 

@@ -23,14 +23,14 @@
         "purgecss-webpack-plugin": "^6.0.0",
         "purgecss-with-wordpress": "^6.0.0",
         "sass": "^1.77.8",
-        "sass-loader": "^16.0.0",
-        "sharp": "^0.33.4",
+        "sass-loader": "^16.0.1",
+        "sharp": "^0.33.5",
         "svgo": "^3.3.2"
     },
     "dependencies": {
         "@fancyapps/ui": "^5.0.36",
         "current-device": "^0.10.2",
-        "dialogic-js": "^0.5.2",
+        "dialogic-js": "^0.5.4",
         "ensemble-social-share": "git+https://github.com/loltgt/ensemble-social-share.git",
         "foundation-sites": "^6.8.1",
         "jquery": "^3.7.1",

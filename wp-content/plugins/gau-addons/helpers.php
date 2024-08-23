@@ -1,6 +1,133 @@
 <?php
 
+use Detection\Exception\MobileDetectException;
+use Detection\MobileDetect;
+use MatthiasMullie\Minify;
+
 defined( 'ABSPATH' ) || die;
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'is_amp_enabled' ) ) {
+	/**
+	 * @param $html
+	 *
+	 * @return false|int
+	 */
+	function is_amp_enabled( $html ): false|int {
+
+		// Get the first 200 chars of the file to make the preg_match check faster.
+		$is_amp = substr( $html, 0, 200 );
+
+		// Checks if the document is containing the amp tag.
+		return preg_match( '/<html[^>]+(amp|⚡)[^>]*>/u', $is_amp );
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'is_mobile' ) ) {
+	/**
+	 * Test if the current browser runs on a mobile device (smartphone, tablet, etc.)
+	 *
+	 * @return boolean
+	 * @throws MobileDetectException
+	 */
+	function is_mobile(): bool {
+
+		if ( class_exists( MobileDetect::class ) ) {
+			return ( new MobileDetect() )->isMobile();
+		}
+
+		return wp_is_mobile();
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'get_current_url' ) ) {
+	/**
+	 * Get the current url.
+	 *
+	 * @return string The current url.
+	 */
+	function get_current_url(): string {
+
+		// Return empty string if it is not an HTTP request.
+		if ( ! isset( $_SERVER['HTTP_HOST'] ) ) {
+			return '';
+		}
+
+		$protocol = isset( $_SERVER['HTTPS'] ) ? 'https' : 'http';
+
+		// Build the current url.
+		return $protocol . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'light_house' ) ) {
+	/**
+	 * @return bool
+	 */
+	function light_house(): bool {
+		$header = $_SERVER['HTTP_USER_AGENT'];
+
+		return mb_strpos( $header, "Lighthouse", 0, "UTF-8" ) !== false;
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'extract_js' ) ) {
+	/**
+	 * @param string $content
+	 *
+	 * @return string
+	 */
+	function extract_js( string $content = '' ): string {
+
+		// Define pattern for matching <script> tags
+		$script_pattern = '/<script\b[^>]*>(.*?)<\/script>/is';
+
+		// Find and extract JavaScript code within <script> tags
+		preg_match_all( $script_pattern, $content, $matches );
+
+		// Initialize an array to hold the non-empty <script> tags or those with src attribute
+		$valid_scripts = [];
+
+		// Define patterns for detecting potentially malicious code or encoding
+		$malicious_patterns = [
+			'/eval\(/i',           // Use of eval()
+			'/document\.write\(/i',// Use of document.write()
+			'/<script.*?src=[\'"]?data:/i', // Inline scripts with data URIs
+			'/base64,/i',           // Base64 encoding
+		];
+
+		// Loop through all matched <script> tags
+		foreach ( $matches[0] as $index => $scriptTag ) {
+			$scriptContent = trim( $matches[1][ $index ] );
+			$hasSrc        = preg_match( '/\bsrc=["\'].*?["\']/', $scriptTag );
+
+			// Check if the script content is not malicious
+			$isMalicious = false;
+			foreach ( $malicious_patterns as $pattern ) {
+				if ( preg_match( $pattern, $scriptContent ) ) {
+					$isMalicious = true;
+					break;
+				}
+			}
+
+			if ( ! $isMalicious && ( $scriptContent !== '' || $hasSrc ) ) {
+				$valid_scripts[] = $scriptTag;
+			}
+		}
+
+		// Return the concatenated valid <script> tags
+		return implode( "\n", $valid_scripts );
+	}
+}
 
 /** ----------------------------------------------- */
 
@@ -127,6 +254,58 @@ if ( ! function_exists( 'redirect' ) ) {
 
 			return true;
 		}
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'js_minify' ) ) {
+	/**
+	 * @param $js
+	 * @param bool $debug_check
+	 *
+	 * @return mixed|string
+	 */
+	function js_minify( $js, bool $debug_check = true ): mixed {
+		if ( empty( $js ) ) {
+			return $js;
+		}
+
+		if ( $debug_check && WP_DEBUG ) {
+			return $js;
+		}
+
+		if ( class_exists( Minify\JS::class ) ) {
+			return ( new Minify\JS() )->add( $js )->minify();
+		}
+
+		return $js;
+	}
+}
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'css_minify' ) ) {
+	/**
+	 * @param $css
+	 * @param bool $debug_check
+	 *
+	 * @return string
+	 */
+	function css_minify( $css, bool $debug_check = true ): string {
+		if ( empty( $css ) ) {
+			return $css;
+		}
+
+		if ( $debug_check && WP_DEBUG ) {
+			return $css;
+		}
+
+		if ( class_exists( Minify\CSS::class ) ) {
+			return ( new Minify\CSS() )->add( $css )->minify();
+		}
+
+		return $css;
 	}
 }
 

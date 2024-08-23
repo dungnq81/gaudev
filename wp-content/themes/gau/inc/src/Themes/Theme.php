@@ -232,7 +232,6 @@ final class Theme {
 	 * @return void
 	 */
 	public function wp_enqueue_scripts(): void {
-
 		$version = THEME_VERSION;
 		if ( WP_DEBUG ) {
 			$version = date( 'YmdHis', current_time( 'U', 0 ) );
@@ -249,7 +248,7 @@ final class Theme {
 		wp_enqueue_script( "back-to-top", ASSETS_URL . "js/plugins/back-to-top.js", [], $version, true );
 		wp_enqueue_script( "social-share", ASSETS_URL . "js/plugins/social-share.js", [], $version, true );
 
-		//wp_enqueue_style( "font-style", ASSETS_URL . "css/fonts.css", [], $version );
+		wp_enqueue_style( "font-style", ASSETS_URL . "css/fonts.css", [], $version );
 
 		/** Inline Js */
 		$recaptcha_options = Helper::getOption( 'recaptcha__options' );

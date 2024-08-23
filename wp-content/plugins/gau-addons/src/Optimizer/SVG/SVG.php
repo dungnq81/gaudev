@@ -20,15 +20,14 @@ final class SVG {
 
 	use Singleton;
 
-	// ------------------------------------------------------
-
 	private Sanitizer $sanitizer;
 	private string $svg_option;
 
 	// ------------------------------------------------------
 
 	private function init(): void {
-		$this->svg_option = optimizer_options( 'svgs', 'disable' );
+		$optimizer_options = get_option( 'optimizer__options' );
+		$this->svg_option = $optimizer_options[ 'svgs' ] ?? 'disable';
 
 		if ( 'disable' !== $this->svg_option ) {
 			$this->_init_svg();
@@ -149,9 +148,7 @@ final class SVG {
 	 * @return mixed
 	 */
 	public function wp_check_filetype_and_ext( $filetype_ext_data, $file, $filename, $mimes ): mixed {
-		if ( 'disable' !== $this->svg_option &&
-		     current_user_can( 'upload_files' )
-		) {
+		if ( 'disable' !== $this->svg_option && current_user_can( 'upload_files' ) ) {
 			if ( str_ends_with( $filename, '.svg' ) ) {
 				$filetype_ext_data['ext']  = 'svg';
 				$filetype_ext_data['type'] = 'image/svg+xml';
@@ -172,9 +169,7 @@ final class SVG {
 	 * @return array
 	 */
 	public function add_svg_mime( array $mimes = [] ): array {
-		if ( 'disable' !== $this->svg_option &&
-		     current_user_can( 'upload_files' )
-		) {
+		if ( 'disable' !== $this->svg_option && current_user_can( 'upload_files' ) ) {
 			$mimes['svg']  = 'image/svg+xml';
 			$mimes['svgz'] = 'image/svg+xml';
 		}

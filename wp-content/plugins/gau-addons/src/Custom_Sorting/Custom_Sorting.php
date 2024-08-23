@@ -10,16 +10,16 @@ use Addons\Base\Singleton;
  * Order Items (Posts, Pages, and Custom Post Types) using a Drag-and-Drop Sortable JavaScript.
  *
  * @author Colorlib
- * Modified by HD Team
+ * Modified by Gaudev Team
  */
 final class Custom_Sorting {
 
 	use Singleton;
 
-	// ------------------------------------------------------
-
 	private mixed $order_post_type;
 	private mixed $order_taxonomy;
+
+	// ------------------------------------------------------
 
 	private function init(): void {
 
@@ -48,8 +48,11 @@ final class Custom_Sorting {
 
 	// ------------------------------------------------------
 
+	/**
+	 * @return void
+	 */
 	private function _init_run(): void {
-		add_action( 'admin_enqueue_scripts', [ &$this, 'admin_enqueue_scripts' ], 33, 1 );
+		add_action( 'admin_enqueue_scripts', [ &$this, 'admin_enqueue_scripts' ], 33 );
 		add_action( 'admin_init', [ &$this, 'refresh' ] );
 
 		// posts
@@ -83,12 +86,11 @@ final class Custom_Sorting {
 	public function admin_enqueue_scripts( $hook_suffix ): void {
 		if ( $this->_check_custom_sorting_script() ) {
 			wp_enqueue_script(
-				'addon-custom-order',
-				ADDONS_URL . 'assets/js/custom_order.js',
+				'addon-custom-sorting',
+				ADDONS_URL . 'assets/js/custom_sorting.js',
 				[
 					'jquery-core',
-					'jquery-ui-sortable',
-					'admin'
+					'jquery-ui-sortable'
 				],
 				ADDONS_VERSION,
 				true
@@ -664,7 +666,7 @@ final class Custom_Sorting {
 			'order_taxonomy'  => [],
 		];
 
-		update_option( 'custom_order__options', $custom_order_options );
+		update_option( 'custom_sorting__options', $custom_order_options );
 		set_theme_mod( '_custom_sorting_', 0 );
 	}
 }

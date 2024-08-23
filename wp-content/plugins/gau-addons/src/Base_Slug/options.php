@@ -1,6 +1,6 @@
 <?php
 
-$custom_base_slug_options = get_option( 'custom_base_slug__options' );
+$custom_base_slug_options = get_option( 'base_slug__options' );
 $base_slug_post_type      = $custom_base_slug_options['base_slug_post_type'] ?? [];
 $base_slug_taxonomy       = $custom_base_slug_options['base_slug_taxonomy'] ?? [];
 

@@ -21,6 +21,7 @@ final class Login_Attempts {
 		3  => '3',
 		5  => '5',
 		10 => '10',
+		15 => '15',
 	];
 
 	// --------------------------------------------------
@@ -29,7 +30,7 @@ final class Login_Attempts {
 	 * The constructor.
 	 */
 	public function __construct() {
-		$security_options           = Helper::getOption( 'login_security__options' );
+		$security_options           = get_option( 'login_security__options' );
 		$this->limit_login_attempts = $security_options['limit_login_attempts'] ?? 0;
 	}
 
@@ -43,7 +44,7 @@ final class Login_Attempts {
 	public function maybe_block_login_access(): void {
 
 		// Get the user ip.
-		$user_ip = Helper::getIpAddress();
+		$user_ip = ip_address();
 
 		// Get login attempts data.
 		$login_attempts = get_option( '_security_unsuccessful_login', [] );
@@ -59,7 +60,7 @@ final class Login_Attempts {
 			// Update the total blocked logins counter.
 			update_option( '_security_total_blocked_logins', get_option( '_security_total_blocked_logins', 0 ) + 1 );
 
-			error_log( 'Too many incorrect login attempts. - ' . Helper::getIpAddress() );
+			error_log( 'Too many incorrect login attempts. - ' . ip_address() );
 			wp_die(
 				esc_html__( 'Access to login page is currently restricted because of too many incorrect login attempts.', ADDONS_TEXT_DOMAIN ),
 				esc_html__( 'Restricted access', ADDONS_TEXT_DOMAIN ),
@@ -106,7 +107,7 @@ final class Login_Attempts {
 		}
 
 		// Get the current user ip.
-		$user_ip = Helper::getIpAddress();
+		$user_ip = ip_address();
 
 		// Get the login attempts data.
 		$login_attempts = get_option( '_security_unsuccessful_login', [] );
@@ -169,8 +170,8 @@ final class Login_Attempts {
 	 * @return void
 	 */
 	public function reset_login_attempts(): void {
-		$user_ip        = Helper::getIpAddress();
-		$login_attempts = Helper::getOption( '_security_unsuccessful_login', [] );
+		$user_ip        = ip_address();
+		$login_attempts = get_option( '_security_unsuccessful_login', [] );
 
 		// Bail if the IP doesn't exist in the unsuccessful logins.
 		if ( ! array_key_exists( $user_ip, $login_attempts ) ) {

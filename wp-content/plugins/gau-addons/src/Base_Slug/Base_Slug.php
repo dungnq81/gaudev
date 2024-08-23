@@ -294,7 +294,7 @@ final class Base_Slug {
 			'base_slug_taxonomy'  => [],
 		];
 
-		update_option( 'custom_base_slug__options', $custom_base_slug_options );
+		update_option( 'base_slug__options', $custom_base_slug_options );
 
 		$this->flush_rules();
 	}

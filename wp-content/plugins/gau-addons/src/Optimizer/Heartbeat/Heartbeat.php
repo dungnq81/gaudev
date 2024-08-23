@@ -15,7 +15,8 @@ final class Heartbeat {
 	public array $options;
 
 	private function init(): void {
-		$heartbeat = optimizer_options( 'heartbeat', 0 );
+		$optimizer_options = get_option( 'optimizer__options' );
+		$heartbeat = $optimizer_options[ 'heartbeat' ] ?? 0;
 
 		if ( ! empty( $heartbeat ) ) {
 			$this->_set_intervals();

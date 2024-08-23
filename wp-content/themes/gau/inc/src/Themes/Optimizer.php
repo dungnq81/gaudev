@@ -33,6 +33,9 @@ final class Optimizer {
 	 */
 	private function _optimizer(): void {
 
+		add_filter( 'script_loader_tag', [ &$this, 'script_loader_tag' ], 12, 3 );
+		add_filter( 'style_loader_tag', [ &$this, 'style_loader_tag' ], 12, 2 );
+
 		// Adding Shortcode in WordPress Using Custom HTML Widget
 		add_filter( 'widget_text', 'do_shortcode' );
 		add_filter( 'widget_text', 'shortcode_unautop' );
@@ -215,13 +218,66 @@ final class Optimizer {
 		}
 
 		$str_parsed = Helper::filterSettingOptions( 'defer_script', [] );
-		if ( Helper::hasDelayScriptTag( $str_parsed ) &&
-		     is_file( $load_scripts = THEME_PATH . 'assets/js/plugins/load-scripts.js' )
-		) {
+		if ( Helper::hasDelayScriptTag( $str_parsed ) && is_file( $load_scripts = THEME_PATH . 'assets/js/plugins/load-scripts.js' ) ) {
 			echo '<script>';
 			include $load_scripts;
 			echo '</script>';
 		}
+	}
+
+	// ------------------------------------------------------
+
+	/**
+	 * @param string $tag
+	 * @param string $handle
+	 * @param string $src
+	 *
+	 * @return string
+	 */
+	public function script_loader_tag( string $tag, string $handle, string $src ): string {
+
+		// Adds `async`, `defer` and attribute support for scripts registered or enqueued by the theme.
+		foreach ( [ 'async', 'defer' ] as $attr ) {
+			if ( ! wp_scripts()->get_data( $handle, $attr ) ) {
+				continue;
+			}
+
+			// Prevent adding attribute when already added in #12009.
+			if ( ! preg_match( ":\s$attr(=|>|\s):", $tag ) ) {
+				$tag = preg_replace( ':(?=></script>):', " $attr", $tag, 1 );
+			}
+
+			// Only allow async or defer, not both.
+			break;
+		}
+
+		// Custom filter which adds proper attributes
+
+		// Fontawesome kit
+		if ( ( 'fontawesome-kit' === $handle ) && ! preg_match( ':\scrossorigin([=>\s]):', $tag ) ) {
+			$tag = preg_replace( ':(?=></script>):', " crossorigin='anonymous'", $tag, 1 );
+		}
+
+		// Add script handles to the array
+		$str_parsed = Helper::filterSettingOptions( 'defer_script', [] );
+
+		return Helper::lazyScriptTag( $str_parsed, $tag, $handle, $src );
+	}
+
+	// ------------------------------------------------------
+
+	/**
+	 * Add style handles to the array below
+	 *
+	 * @param string $html
+	 * @param string $handle
+	 *
+	 * @return string
+	 */
+	public function style_loader_tag( string $html, string $handle ): string {
+		$styles = Helper::filterSettingOptions( 'defer_style', [] );
+
+		return Helper::lazyStyleTag( $styles, $html, $handle );
 	}
 
 	// ------------------------------------------------------

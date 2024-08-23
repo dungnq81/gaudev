@@ -42,8 +42,9 @@ final class Lazy_Load {
 	 * @throws MobileDetectException
 	 */
 	private function init(): void {
-		$lazy_load        = optimizer_options( 'lazy_load', 0 );
-		$lazy_load_mobile = optimizer_options( 'lazy_load_mobile', 0 );
+		$optimizer_options = get_option( 'optimizer__options' );
+		$lazy_load        = $optimizer_options[ 'lazy_load' ] ?? 0;
+		$lazy_load_mobile = $optimizer_options[ 'lazy_load_mobile' ] ?? 0;
 
 		if ( empty( $lazy_load ) ) {
 			return;
