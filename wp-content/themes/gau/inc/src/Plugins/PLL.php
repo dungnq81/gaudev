@@ -56,7 +56,13 @@ final class PLL {
 	 * @return string
 	 */
 	public function gau_home_url( $url, $path ): string {
-		return \pll_home_url() . trim( $path, '/' ) . '/';
+		$path = trim( $path, '/' );
+
+		if ( empty( $path ) ) {
+			return \pll_home_url();
+		}
+
+		return \pll_home_url() . $path . '/';
 	}
 
 	// --------------------------------------------------

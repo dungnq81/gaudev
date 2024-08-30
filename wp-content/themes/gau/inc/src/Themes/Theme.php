@@ -440,12 +440,11 @@ final class Theme {
 		$css->set_selector( 'body.login #login h1 a' );
 		if ( $logo ) {
 			$css->add_property( 'background-image', 'url(' . $logo . ')' );
-		} //else {
-		//$css->add_property( 'background-image', 'unset' );
-		//}
+		}
 
-		if ( $css->css_output() ) {
-			wp_add_inline_style( 'login-style', $css->css_output() );
+		$css_output = $css->css_output();
+		if ( $css_output ) {
+			wp_add_inline_style( 'login-style', $css_output );
 		}
 	}
 }

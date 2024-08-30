@@ -467,6 +467,8 @@ final class Option_Page {
 	 * @return void
 	 */
 	public function _gau_server_info_callback(): void {
+        global $wpdb;
+
 		?>
         <div class="wrap">
             <div id="main">
@@ -478,22 +480,23 @@ final class Option_Page {
 						echo __( 'System configuration information', ADDONS_TEXT_DOMAIN ) ?></p>
                     <div class="server-info-inner code">
                         <ul>
-                            <li><?php
-								echo sprintf( '<span>Platform:</span> %s', php_uname() ); ?></li>
+                            <li><?php echo sprintf( '<span>Platform:</span> %s', php_uname() ); ?></li>
+                            <li><?php echo sprintf( '<span>Server:</span> %s', $_SERVER['SERVER_SOFTWARE'] ); ?></li>
+                            <li><?php echo sprintf( '<span>Server IP:</span> %s', $_SERVER['SERVER_ADDR'] ); ?></li>
 
-							<?php
-							if ( $server_software = $_SERVER['SERVER_SOFTWARE'] ?? null ) : ?>
-                                <li><?php
-									echo sprintf( '<span>SERVER:</span> %s', $server_software ); ?></li>
-							<?php
-							endif; ?>
+	                        <?php
+	                        $cpu_info = file_get_contents('/proc/cpuinfo');
+	                        preg_match('/^model name\s*:\s*(.+)$/m', $cpu_info, $matches);
+	                        $cpu_model = isset($matches[1]) ? trim($matches[1]) : 'Unknown';
+	                        ?>
+                            <li><?php echo sprintf( '<span>CPU Info:</span> %s', $cpu_model ); ?></li>
 
-                            <li><?php
-								echo sprintf( '<span>PHP version:</span> %s', PHP_VERSION ); ?></li>
-                            <li><?php
-								echo sprintf( '<span>WordPress version:</span> %s', get_bloginfo( 'version' ) ); ?></li>
-                            <li><?php
-								echo sprintf( '<span>WordPress multisite:</span> %s', ( is_multisite() ? 'Yes' : 'No' ) ); ?></li>
+                            <li><?php echo sprintf( '<span>Memory Limit:</span> %s', ini_get('memory_limit') ); ?></li>
+                            <li><?php echo sprintf( '<span>PHP version:</span> %s', PHP_VERSION ); ?></li>
+                            <li><?php echo sprintf( '<span>MySql version:</span> %s', $wpdb->db_version() ); ?></li>
+
+                            <li><?php echo sprintf( '<span>WordPress version:</span> %s', get_bloginfo( 'version' ) ); ?></li>
+                            <li><?php echo sprintf( '<span>WordPress multisite:</span> %s', ( is_multisite() ? 'Yes' : 'No' ) ); ?></li>
 							<?php
 							$openssl_status = __( 'Available', ADDONS_TEXT_DOMAIN );
 							$openssl_text   = '';
@@ -502,10 +505,8 @@ final class Option_Page {
 								$openssl_text   = __( ' (openssl extension is required in order to use any kind of encryption like TLS or SSL)', ADDONS_TEXT_DOMAIN );
 							}
 							?>
-                            <li><?php
-								echo sprintf( '<span>openssl:</span> %s%s', $openssl_status, $openssl_text ); ?></li>
-                            <li><?php
-								echo sprintf( '<span>allow_url_fopen:</span> %s', ( ini_get( 'allow_url_fopen' ) ? __( 'Enabled', ADDONS_TEXT_DOMAIN ) : __( 'Disabled', ADDONS_TEXT_DOMAIN ) ) ); ?></li>
+                            <li><?php echo sprintf( '<span>openssl:</span> %s%s', $openssl_status, $openssl_text ); ?></li>
+                            <li><?php echo sprintf( '<span>allow_url_fopen:</span> %s', ( ini_get( 'allow_url_fopen' ) ? __( 'Enabled', ADDONS_TEXT_DOMAIN ) : __( 'Disabled', ADDONS_TEXT_DOMAIN ) ) ); ?></li>
 							<?php
 							$stream_socket_client_status = __( 'Not Available', ADDONS_TEXT_DOMAIN );
 							$fsockopen_status            = __( 'Not Available', ADDONS_TEXT_DOMAIN );
@@ -525,20 +526,15 @@ final class Option_Page {
 								$socket_text = __( ' (In order to make a SMTP connection your server needs to have either stream_socket_client or fsockopen)', ADDONS_TEXT_DOMAIN );
 							}
 							?>
-                            <li><?php
-								echo sprintf( '<span>stream_socket_client:</span> %s', $stream_socket_client_status ); ?></li>
-                            <li><?php
-								echo sprintf( '<span>fsockopen:</span> %s%s', $fsockopen_status, $socket_text ); ?></li>
+                            <li><?php echo sprintf( '<span>stream_socket_client:</span> %s', $stream_socket_client_status ); ?></li>
+                            <li><?php echo sprintf( '<span>fsockopen:</span> %s%s', $fsockopen_status, $socket_text ); ?></li>
 
 							<?php
 							if ( $agent = $_SERVER['HTTP_USER_AGENT'] ?? null ) : ?>
-                                <li><?php
-									echo sprintf( '<span>User agent:</span> %s', $agent ); ?></li>
-							<?php
-							endif; ?>
+                            <li><?php echo sprintf( '<span>User agent:</span> %s', $agent ); ?></li>
+							<?php endif; ?>
 
-                            <li><?php
-								echo sprintf( '<span>IP:</span> %s', \ip_address() ); ?></li>
+                            <li><?php echo sprintf( '<span>IP:</span> %s', \ip_address() ); ?></li>
                         </ul>
                     </div>
                 </div>

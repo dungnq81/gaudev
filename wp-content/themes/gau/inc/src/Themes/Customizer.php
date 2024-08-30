@@ -109,7 +109,7 @@ final class Customizer {
 			[
 				'priority'       => 140,
 				'theme_supports' => '',
-				'title'          => __( 'HD', TEXT_DOMAIN ),
+				'title'          => __( 'Gaudev', TEXT_DOMAIN ),
 				'description'    => __( 'Controls the add-on menu', TEXT_DOMAIN ),
 			]
 		);
@@ -252,7 +252,7 @@ final class Customizer {
 		$wp_customize->add_section(
 			'breadcrumb_section',
 			[
-				'title'    => __( 'Breadcrumbs', TEXT_DOMAIN ),
+				'title'    => __( 'Breadcrumb', TEXT_DOMAIN ),
 				'panel'    => 'addon_menu_panel',
 				'priority' => 1007,
 			]
