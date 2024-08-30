@@ -248,7 +248,7 @@ trait Url {
 	 * @return string
 	 */
 	public static function home( string $path = '' ): string {
-		return apply_filters( 'gau_home_url', esc_url( network_home_url( $path ) ) );
+		return apply_filters( 'gau_home_url', esc_url( home_url( $path ) ), $path );
 	}
 
 	// --------------------------------------------------

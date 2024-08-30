@@ -19,21 +19,14 @@ final class PLL {
 	private function init(): void {
 		add_action( 'init', [ &$this, 'register_and_translate_wc_attributes' ] );
 		add_action( 'wp_loaded', [ &$this, 'language_switch_empty_cart' ] );
+
 		add_filter( 'woocommerce_attribute_label', [ &$this, 'translate_product_attribute_label' ], 10, 3 );
 		add_filter( 'woocommerce_variation_option_name', [ &$this, 'translate_product_attribute_option_name' ] );
 
+		add_filter( 'woocommerce_get_shop_url', [ &$this, 'woocommerce_get_shop_url' ], 10, 1 );
+
 		// custom filters
-		add_filter( 'gau_home_url', [ &$this, 'gau_home_url' ] );
-		add_filter( 'gau_get_shop_url', [ &$this, 'gau_get_shop_url' ], 10, 1 );
-	}
-
-	// --------------------------------------------------
-
-	/**
-	 * @return mixed
-	 */
-	public function gau_home_url(): mixed {
-		return \pll_home_url();
+		add_filter( 'gau_home_url', [ &$this, 'gau_home_url' ], 10, 2 );
 	}
 
 	// --------------------------------------------------
@@ -43,7 +36,7 @@ final class PLL {
 	 *
 	 * @return string
 	 */
-	public function gau_get_shop_url( $url ): string {
+	public function woocommerce_get_shop_url( $url ): string {
 		if ( Helper::checkPluginActive( 'polylang-wc/polylang-wc.php' ) ) {
 			return $url;
 		}
@@ -51,7 +44,19 @@ final class PLL {
 		$shop_page_id = wc_get_page_id( 'shop' );
 		$shop_slug    = get_post_field( 'post_name', $shop_page_id );
 
-		return \pll_home_url() . $shop_slug;
+		return \pll_home_url() . trim( $shop_slug ) . '/';
+	}
+
+	// --------------------------------------------------
+
+	/**
+	 * @param $url
+	 * @param $path
+	 *
+	 * @return string
+	 */
+	public function gau_home_url( $url, $path ): string {
+		return \pll_home_url() . trim( $path, '/' ) . '/';
 	}
 
 	// --------------------------------------------------
@@ -70,13 +75,18 @@ final class PLL {
 		if ( $current_lang &&
 		     $previous_lang &&
 		     $current_lang !== $previous_lang &&
-		     WC()->cart && ! WC()->cart->is_empty()
+		     ! empty( WC()->cart ) && ! WC()->cart->is_empty()
 		) {
 			WC()->cart->empty_cart();
 		}
 
+		if ( headers_sent() ) {
+			//error_log( 'Headers already sent, cannot set cookie.' );
+			return;
+		}
+
 		// 7 days - 10080 minutes
-		setcookie( 'wc_language', $current_lang, time() + 10080 * MINUTE_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, ini_get( 'session.cookie_secure' ), ini_get( 'session.cookie_httponly' ) );
+		setcookie( 'wc_language', $current_lang, time() + 10080 * MINUTE_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), false );
 	}
 
 	// --------------------------------------------------
@@ -89,6 +99,8 @@ final class PLL {
 	 * @return string
 	 */
 	public function translate_product_attribute_label( $label, $name, $product ): string {
+
+		// Get the translated string from Polylang
 		return \pll__( $label );
 	}
 
@@ -100,6 +112,8 @@ final class PLL {
 	 * @return string
 	 */
 	public function translate_product_attribute_option_name( $term_name ): string {
+
+		// Get the translated string from Polylang
 		return \pll__( $term_name );
 	}
 
