@@ -13,7 +13,13 @@ $menu_options_page = apply_filters( 'gau_menu_options_page', [] );
 	foreach ( $menu_options_page as $slug => $value ) :
 		$show_class = ( 0 === $i ) ? ' show' : '';
 
+		// WooCommerce
 		if ( 'woocommerce' === (string) $slug && ! check_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+			continue;
+		}
+
+		// SMTP
+		if ( 'smtp' === (string) $slug && ! check_smtp_plugin_active() ) {
 			continue;
 		}
 	?>

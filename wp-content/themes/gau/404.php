@@ -7,4 +7,4 @@
 
 \defined( 'ABSPATH' ) || die;
 
-wp_safe_redirect( \Cores\Helper::home() );
+//wp_redirect( \Cores\Helper::home() );

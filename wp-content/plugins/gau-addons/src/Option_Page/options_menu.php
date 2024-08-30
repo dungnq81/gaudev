@@ -23,7 +23,13 @@ $menu_options_page = apply_filters( 'gau_menu_options_page', [] );
         foreach ( $menu_options_page as $slug => $value ) :
             $current = ( 0 === $i ) ? ' class="current"' : '';
 
+            // WooCommerce
             if ( 'woocommerce' === (string) $slug && ! check_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+                continue;
+            }
+
+            // SMTP
+            if ( 'smtp' === (string) $slug && ! check_smtp_plugin_active() ) {
                 continue;
             }
         ?>
