@@ -73,8 +73,8 @@ $table_prefix = 'MTRlZG_';
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
 const WP_DEBUG         = true;
-const WP_DEBUG_LOG     = true;
-const WP_DEBUG_DISPLAY = false;
+const WP_DEBUG_LOG     = false;
+//const WP_DEBUG_DISPLAY = false;
 
 /* Add any custom values between this line and the "stop editing" line. */
 

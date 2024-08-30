@@ -57,6 +57,7 @@ wp-content/themes/*
 # ignore these plugins
 wp-content/plugins/*
 
+!wp-content/plugins/fluent-smtp/
 !wp-content/plugins/advanced-custom-fields-pro/
 !wp-content/plugins/hd-addons/
 !wp-content/plugins/gau-addons/
