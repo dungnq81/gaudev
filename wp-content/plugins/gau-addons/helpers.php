@@ -3,8 +3,26 @@
 use Detection\Exception\MobileDetectException;
 use Detection\MobileDetect;
 use MatthiasMullie\Minify;
+use Vectorface\Whip\Whip;
 
 defined( 'ABSPATH' ) || die;
+
+/** ----------------------------------------------- */
+
+if ( ! function_exists( 'is_xml' ) ) {
+	/**
+	 * @param $content
+	 *
+	 * @return false|int
+	 */
+	function is_xml( $content ): false|int {
+
+		// Get the first 200 chars of the file to make the preg_match check faster.
+		$xml_part = substr( $content, 0, 20 );
+
+		return preg_match( '/<\?xml version="/', $xml_part );
+	}
+}
 
 /** ----------------------------------------------- */
 
@@ -34,7 +52,6 @@ if ( ! function_exists( 'is_mobile' ) ) {
 	 * @throws MobileDetectException
 	 */
 	function is_mobile(): bool {
-
 		if ( class_exists( MobileDetect::class ) ) {
 			return ( new MobileDetect() )->isMobile();
 		}
@@ -67,11 +84,11 @@ if ( ! function_exists( 'get_current_url' ) ) {
 
 /** ----------------------------------------------- */
 
-if ( ! function_exists( 'light_house' ) ) {
+if ( ! function_exists( 'lighthouse' ) ) {
 	/**
 	 * @return bool
 	 */
-	function light_house(): bool {
+	function lighthouse(): bool {
 		$header = $_SERVER['HTTP_USER_AGENT'];
 
 		return mb_strpos( $header, "Lighthouse", 0, "UTF-8" ) !== false;
@@ -238,19 +255,11 @@ if ( ! function_exists( 'redirect' ) ) {
 	 * @return true|void
 	 */
 	function redirect( string $uri = '', int $status = 301 ) {
-		if ( ! preg_match( '#^(\w+:)?//#', $uri ) ) {
-			$uri = trailingslashit( esc_url( network_home_url( $uri ) ) );
-		}
-
 		if ( ! headers_sent() ) {
-			wp_safe_redirect( $uri, $status );
+			wp_redirect( $uri, $status );
 		} else {
-			echo '<script>';
-			echo 'window.location.href="' . $uri . '";';
-			echo '</script>';
-			echo '<noscript>';
-			echo '<meta http-equiv="refresh" content="0;url=' . $uri . '" />';
-			echo '</noscript>';
+			echo '<script>window.location.href="' . $uri . '";</script>';
+			echo '<noscript><meta http-equiv="refresh" content="0;url=' . $uri . '" /></noscript>';
 
 			return true;
 		}
@@ -559,27 +568,35 @@ if ( ! function_exists( 'ip_address' ) ) {
 	 * @return string
 	 */
 	function ip_address(): string {
+		if ( class_exists( 'Whip' ) ) {
+			$clientAddress = ( new Whip( Whip::ALL_METHODS ) )->getValidIpAddress();
 
-		// Get real visitor IP behind CloudFlare network
-		if ( isset( $_SERVER["HTTP_CF_CONNECTING_IP"] ) ) {
-			$_SERVER['REMOTE_ADDR']    = $_SERVER["HTTP_CF_CONNECTING_IP"];
-			$_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
-		}
+			if ( false !== $clientAddress ) {
+				return preg_replace( '/^::1$/', '127.0.0.1', $clientAddress );
+			}
+		} else {
 
-		$client  = $_SERVER['HTTP_CLIENT_IP'] ?? '';
-		$forward = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
-		$remote  = $_SERVER['REMOTE_ADDR'] ?? '';
+			// Get real visitor IP behind CloudFlare network
+			if ( isset( $_SERVER["HTTP_CF_CONNECTING_IP"] ) ) {
+				$_SERVER['REMOTE_ADDR']    = $_SERVER["HTTP_CF_CONNECTING_IP"];
+				$_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+			}
 
-		if ( filter_var( $client, FILTER_VALIDATE_IP ) ) {
-			return $client;
-		}
+			$client  = $_SERVER['HTTP_CLIENT_IP'] ?? '';
+			$forward = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+			$remote  = $_SERVER['REMOTE_ADDR'] ?? '';
 
-		if ( filter_var( $forward, FILTER_VALIDATE_IP ) ) {
-			return $forward;
-		}
+			if ( filter_var( $client, FILTER_VALIDATE_IP ) ) {
+				return $client;
+			}
 
-		if ( filter_var( $remote, FILTER_VALIDATE_IP ) ) {
-			return $remote;
+			if ( filter_var( $forward, FILTER_VALIDATE_IP ) ) {
+				return $forward;
+			}
+
+			if ( filter_var( $remote, FILTER_VALIDATE_IP ) ) {
+				return $remote;
+			}
 		}
 
 		// Fallback local ip.
@@ -594,6 +611,7 @@ if ( ! function_exists( 'clear_all_cache' ) ) {
 	 * @return void
 	 */
 	function clear_all_cache(): void {
+
 		// LiteSpeed cache
 		if ( class_exists( \LiteSpeed\Purge::class ) ) {
 			\LiteSpeed\Purge::purge_all();
@@ -621,6 +639,8 @@ if ( ! function_exists( 'clear_all_cache' ) ) {
 				\Jetpack_Photon::instance()->purge_cache();
 			}
 		}
+
+		//...
 	}
 }
 

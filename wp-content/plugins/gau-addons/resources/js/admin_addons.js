@@ -156,7 +156,7 @@ jQuery(function ($) {
 
         if (!cookieValue) {
             cookieValue = $nav.find('a:first').attr('href');
-            Cookies.set(_cookie, cookieValue, { expires: 7, path: '' });
+            Cookies.set(_cookie, cookieValue, { expires: 7, path: '', secure: true });
         }
         $nav.find('a.current').removeClass('current');
         $nav.find(`a[href="${cookieValue}"]`).addClass('current');
@@ -166,7 +166,7 @@ jQuery(function ($) {
 
                 const $this = $(this);
                 const hash = $this.attr('href');
-                Cookies.set(_cookie, hash, { expires: 7, path: '' });
+                Cookies.set(_cookie, hash, { expires: 7, path: '', secure: true });
 
                 $nav.find('a.current').removeClass('current');
                 $content.find('.tabs-panel:visible').removeClass('show')?.hide();

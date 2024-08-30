@@ -1,6 +1,6 @@
 <?php
 
-namespace Addons\Optimizer\Options\Minifier;
+namespace Addons\Optimizer\Minifier;
 
 \defined( 'ABSPATH' ) || die;
 

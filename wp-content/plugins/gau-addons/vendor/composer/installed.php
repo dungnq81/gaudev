@@ -3,7 +3,7 @@
         'name' => 'plugins/gau-addons',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '4f6a88c521d9ac8af7b71a4e0f29d63fa991c0b9',
+        'reference' => 'f3d1685aabc091b7c283a83930fdd8531d82555b',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -49,9 +49,18 @@
         'plugins/gau-addons' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '4f6a88c521d9ac8af7b71a4e0f29d63fa991c0b9',
+            'reference' => 'f3d1685aabc091b7c283a83930fdd8531d82555b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'psr/http-message' => array(
+            'pretty_version' => '2.0',
+            'version' => '2.0.0.0',
+            'reference' => '402d35bcb92c70c026d1a6a9883f06b2ead23d71',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/http-message',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -67,7 +76,7 @@
         'roave/security-advisories' => array(
             'pretty_version' => 'dev-latest',
             'version' => 'dev-latest',
-            'reference' => '8938260885863ec2dd9f2aaf9a79ba14e58a92f6',
+            'reference' => 'f8de2a81061775002d96aea80b12f2ab3c5eeb8d',
             'type' => 'metapackage',
             'install_path' => null,
             'aliases' => array(
@@ -92,6 +101,15 @@
             'install_path' => __DIR__ . '/../symfony/var-dumper',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'vectorface/whip' => array(
+            'pretty_version' => 'v0.5.0',
+            'version' => '0.5.0.0',
+            'reference' => '0d0f4648cfb29777f0ae9f2dc6a3853e16674f78',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../vectorface/whip',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
     ),
 );

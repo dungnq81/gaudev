@@ -1865,17 +1865,17 @@ trait Wp {
 
 			//$ratio_class         = 'ar-' . $ratio_x . '-' . $ratio_y;
 			$ratio_class         = 'ar[' . $ratio_x . '-' . $ratio_y . ']';
-			$ar_aspect_ratio_css = self::filterSettingOptions( 'aspect_ratio_css', [] );
+			$ar_aspect_ratio_default = self::filterSettingOptions( 'aspect_ratio_default', [] );
 
-			if ( is_array( $ar_aspect_ratio_css ) && ! in_array( $ratio_x . '-' . $ratio_y, $ar_aspect_ratio_css, false ) ) {
-				$css = new CSS();
+			if ( is_array( $ar_aspect_ratio_default ) && ! in_array( $ratio_x . '-' . $ratio_y, $ar_aspect_ratio_default, false ) ) {
+				$css = CSS::get_instance();
 
 				$css->set_selector( '.' . $ratio_class );
 				$css->add_property( 'height', 0 );
 
 				$pb = ( $ratio_y / $ratio_x ) * 100;
 				$css->add_property( 'padding-bottom', $pb . '%' );
-				$css->add_property( 'aspect-ratio', $ratio_x . '/' . $ratio_y );
+				//$css->add_property( 'aspect-ratio', $ratio_x . '/' . $ratio_y );
 
 				$ratio_style = $css->css_output();
 			}
@@ -1972,107 +1972,20 @@ trait Wp {
 	/**
 	 * @param $table_name
 	 * @param $data
+	 * @param bool $sanitize
 	 *
 	 * @return false|int
 	 */
-	public static function insertCustomRow( $table_name, $data ): false|int {
+	public static function insertCustomRow( $table_name, $data, bool $sanitize = false ): false|int {
 		global $wpdb;
 
 		if ( empty( $table_name ) || empty( $data ) || ! is_array( $data ) ) {
 			return false;
 		}
 
-		$table_name = $wpdb->prefix . $table_name;
-
-		// Check if the table exists in the database
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) !== $table_name ) {
-			return false;
-		}
-
 		// Get columns of the table
-		$columns = $wpdb->get_col( "DESC $table_name", 0 );
-
-		// Remove invalid fields from $data that do not match table columns
-		$valid_data = [];
-		foreach ( $data as $key => $value ) {
-			if ( in_array( $key, $columns, false ) ) {
-				$valid_data[ $key ] = $value;
-			}
-		}
-
-		// Check if there is valid data to insert
-		if ( empty( $valid_data ) ) {
-			return false;
-		}
-
-		$wpdb->insert( $table_name, $valid_data );
-
-		return $wpdb->insert_id ?: false;
-	}
-
-	// -------------------------------------------------------------
-
-	/**
-	 * @param $table_name
-	 * @param $id
-	 *
-	 * @return bool
-	 */
-	public static function deleteCustomRow( $table_name, $id ): bool {
-		global $wpdb;
-
-		if ( empty( $table_name ) || empty( $id ) ) {
-			return false;
-		}
-
-		$table_name = $wpdb->prefix . $table_name;
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) !== $table_name ) {
-			return false;
-		}
-
-		$id_exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table_name WHERE id = %d", $id ) );
-		if ( ! $id_exists ) {
-			return false;
-		}
-
-		$wpdb->delete( $table_name, [ 'id' => $id ] );
-
-		$rows_affected = $wpdb->rows_affected;
-
-		return $rows_affected === 1;
-	}
-
-	// -------------------------------------------------------------
-
-	/**
-	 * @param $table_name
-	 * @param $id
-	 * @param $data
-	 *
-	 * @return bool
-	 */
-	public static function updateCustomRow( $table_name, $id, $data ): bool {
-		global $wpdb;
-
-		if ( empty( $table_name ) || empty( $id ) || empty( $data ) || ! is_array( $data ) ) {
-			return false;
-		}
-
-		$table_name = $wpdb->prefix . $table_name;
-
-		// Check if the table exists in the database
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) !== $table_name ) {
-			return false;
-		}
-
-		// Check if the ID exists in the table
-		$id_exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table_name WHERE id = %d", $id ) );
-		if ( ! $id_exists ) {
-			return false;
-		}
-
-		// Get columns of the table
-		$columns = $wpdb->get_col( "DESC $table_name", 0 );
+		$table_name = $sanitize ? sanitize_text_field( $wpdb->prefix . $table_name ) : $wpdb->prefix . $table_name;
+		$columns    = $wpdb->get_col( "DESCRIBE $table_name", 0 );
 
 		// Remove invalid fields from $data that do not match table columns
 		$valid_data = [];
@@ -2087,11 +2000,78 @@ trait Wp {
 			return false;
 		}
 
-		$wpdb->update( $table_name, $valid_data, [ 'id' => $id ] );
+		$row_inserted = $wpdb->insert( $table_name, $valid_data );
+		return $row_inserted ?: false;
+	}
 
-		$rows_affected = $wpdb->rows_affected;
+	// -------------------------------------------------------------
 
-		return $rows_affected === 1;
+	/**
+	 * @param $table_name
+	 * @param $id
+	 * @param $data
+	 * @param bool $sanitize
+	 *
+	 * @return bool
+	 */
+	public static function updateCustomRow( $table_name, $id, $data, bool $sanitize = false ): bool {
+		global $wpdb;
+
+		if ( empty( $table_name ) || empty( $id ) || empty( $data ) || ! is_array( $data ) ) {
+			return false;
+		}
+
+		// Check if the ID exists in the table
+		if ( ! self::checkCustomRow( $table_name, $id, $sanitize ) ) {
+			return false;
+		}
+
+		// Get columns of the table
+		$table_name = $sanitize ? sanitize_text_field( $wpdb->prefix . $table_name ) : $wpdb->prefix . $table_name;
+		$columns    = $wpdb->get_col( "DESCRIBE $table_name", 0 );
+
+		// Remove invalid fields from $data that do not match table columns
+		$valid_data = [];
+		foreach ( $data as $key => $value ) {
+			if ( in_array( $key, $columns, false ) ) {
+				$valid_data[ $key ] = $value;
+			}
+		}
+
+		// Check if there is valid data to update
+		if ( empty( $valid_data ) ) {
+			return false;
+		}
+
+		$row_updated = $wpdb->update( $table_name, $valid_data, [ 'id' => $id ] );
+		return $row_updated === 1;
+	}
+
+	// -------------------------------------------------------------
+
+	/**
+	 * @param $table_name
+	 * @param $id
+	 * @param bool $sanitize
+	 *
+	 * @return bool
+	 */
+	public static function deleteCustomRow( $table_name, $id, bool $sanitize = false ): bool {
+		global $wpdb;
+
+		if ( empty( $table_name ) || empty( $id ) ) {
+			return false;
+		}
+
+		// Check if the ID exists in the table
+		if ( ! self::checkCustomRow( $table_name, $id, $sanitize ) ) {
+			return false;
+		}
+
+		$table_name = $sanitize ? sanitize_text_field( $wpdb->prefix . $table_name ) : $wpdb->prefix . $table_name;
+		$row_deleted = $wpdb->delete( $table_name, [ 'id' => $id ] );
+
+		return $row_deleted === 1;
 	}
 
 	// -------------------------------------------------------------
@@ -2100,21 +2080,18 @@ trait Wp {
 	 * @param $table_name
 	 * @param $column
 	 * @param $key
+	 * @param bool $sanitize
 	 *
 	 * @return array|false
 	 */
-	public static function getCustomRowsByKey( $table_name, $column, $key ): false|array {
+	public static function getCustomRowsByKey( $table_name, $column, $key, bool $sanitize = false ): false|array {
 		global $wpdb;
 
 		// Sanitize table name and column name to prevent SQL injection
-		$table_name = sanitize_text_field( $table_name );
-		$column     = sanitize_text_field( $column );
+		$table_name = $sanitize ? sanitize_text_field( $wpdb->prefix . $table_name ) : $wpdb->prefix . $table_name;
+		$column     = $sanitize ? sanitize_text_field( $column ) : $column;
 
-		// table name with prefix
-		$table_name = $wpdb->prefix . $table_name;
-
-		$query   = $wpdb->prepare( "SELECT * FROM $table_name WHERE $column = %s", $key );
-		$results = $wpdb->get_results( $query, ARRAY_A );
+		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE $column = %s", $key ), ARRAY_A );
 
 		return $results ?: false;
 	}
@@ -2123,17 +2100,63 @@ trait Wp {
 
 	/**
 	 * @param $table_name
-	 * @param int $offset
-	 * @param int $limit
+	 * @param $id
+	 * @param bool $sanitize
 	 *
-	 * @return array|false|object|\stdClass[]
+	 * @return bool
 	 */
-	public static function getCustomRows( $table_name, int $offset = 0, int $limit = - 1 ): array|object|false {
+	public static function checkCustomRow( $table_name, $id, bool $sanitize = false ): bool {
 		global $wpdb;
 
-		$table_name = sanitize_text_field( $table_name );
-		$table_name = $wpdb->prefix . $table_name;
+		// Check if $id exists and convert it to integer
+		$id = isset( $id ) ? (int) $id : 0;
 
+		if ( $id > 0 ) {
+			$table_name = $sanitize ? sanitize_text_field( $wpdb->prefix . $table_name ) : $wpdb->prefix . $table_name;
+			$exists     = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table_name WHERE id = %d", $id ) );
+
+			// Return true if row exists, false otherwise
+			return (bool) $exists;
+		}
+
+		return false;
+	}
+
+	// -------------------------------------------------------------
+
+	/**
+	 * @param $table_name
+	 * @param $id
+	 * @param bool $sanitize
+	 *
+	 * @return array|false|null
+	 */
+	public static function getCustomRow( $table_name, $id, bool $sanitize = false ): false|array|null {
+		global $wpdb;
+
+		if ( empty( $table_name ) || empty( $id ) ) {
+			return false;
+		}
+
+		$table_name = $sanitize ? sanitize_text_field( $wpdb->prefix . $table_name ) : $wpdb->prefix . $table_name;
+
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $id ), ARRAY_A );
+	}
+
+	// -------------------------------------------------------------
+
+	/**
+	 * @param $table_name
+	 * @param int $offset
+	 * @param int $limit
+	 * @param bool $sanitize
+	 *
+	 * @return array|false|null
+	 */
+	public static function getCustomRows( $table_name, int $offset = 0, int $limit = - 1, bool $sanitize = false ): false|array|null {
+		global $wpdb;
+
+		$table_name = $sanitize ? sanitize_text_field( $wpdb->prefix . $table_name ) : $wpdb->prefix . $table_name;
 		$query = "SELECT * FROM $table_name";
 
 		if ( $limit > 0 && $offset >= 0 ) {
@@ -2149,75 +2172,23 @@ trait Wp {
 
 	/**
 	 * @param $table_name
-	 * @param $id
-	 *
-	 * @return bool
-	 */
-	public static function checkCustomRow( $table_name, $id ): bool {
-		global $wpdb;
-
-		// Check if $id exists and convert it to integer
-		$id = isset( $id ) ? (int) $id : 0;
-
-		if ( $id > 0 ) {
-			$table_name = $wpdb->prefix . $table_name;
-			$exists     = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table_name WHERE id = %d", $id ) );
-
-			// Return true if row exists, false otherwise
-			return (bool) $exists;
-		}
-
-		return false;
-	}
-
-	// -------------------------------------------------------------
-
-	/**
-	 * @param $table_name
-	 * @param $id
-	 *
-	 * @return false|array|null
-	 */
-	public static function getCustomRow( $table_name, $id ): false|array|null {
-		global $wpdb;
-
-		if ( empty( $table_name ) || empty( $id ) ) {
-			return false;
-		}
-
-		$table_name   = $wpdb->prefix . $table_name;
-		$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) );
-		if ( ! $table_exists ) {
-			return false;
-		}
-
-		$query = $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $id );
-
-		return $wpdb->get_row( $query, ARRAY_A );
-	}
-
-	// -------------------------------------------------------------
-
-	/**
-	 * @param $table_name
-	 * @param $column
-	 * @param $value
+	 * @param null $column
+	 * @param null $value
+	 * @param bool $sanitize
 	 *
 	 * @return int
 	 */
-	public static function countCustomRowsBy( $table_name, $column = null, $value = null ): int {
+	public static function countCustomRowsBy( $table_name, $column = null, $value = null, bool $sanitize = false ): int {
 		global $wpdb;
 
-		$table_name = sanitize_text_field( $wpdb->prefix . $table_name );
+		$table_name = $sanitize ? sanitize_text_field( $wpdb->prefix . $table_name ) : $wpdb->prefix . $table_name;
+		$column     = $sanitize ? sanitize_text_field( $column ) : $column;
 
 		if ( ! $column ) {
 			return (int) $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 		}
 
-		$column = sanitize_text_field( $column );
-		$query  = $wpdb->prepare( "SELECT COUNT(*) FROM $table_name WHERE $column = %s", $value );
-
 		// Execute the query and get the count
-		return (int) $wpdb->get_var( $query );
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table_name WHERE $column = %s", $value ) );
 	}
 }

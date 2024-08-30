@@ -81,7 +81,6 @@ final class Optimizer {
 		add_filter( 'query_vars', static function ( $vars ) {
 			$vars[] = 'page';
 			$vars[] = 'paged';
-			$vars[] = 'step';
 
 			return $vars;
 		} );

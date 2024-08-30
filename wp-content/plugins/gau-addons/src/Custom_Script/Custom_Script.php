@@ -31,7 +31,7 @@ final class Custom_Script {
 	 */
 	public function header_scripts__hook(): void {
 		$html_header = extract_js( get_custom_post_option_content( 'html_header', true ) );
-		if ( $html_header && ! light_house() ) {
+		if ( $html_header && ! lighthouse() ) {
 			echo js_minify( $html_header, true );
 		}
 	}
@@ -45,7 +45,7 @@ final class Custom_Script {
 	 */
 	public function body_scripts_top__hook(): void {
 		$html_body_top = extract_js( get_custom_post_option_content( 'html_body_top', true ) );
-		if ( $html_body_top && ! light_house() ) {
+		if ( $html_body_top && ! lighthouse() ) {
 			echo js_minify( $html_body_top, true );
 		}
 	}
@@ -59,7 +59,7 @@ final class Custom_Script {
 	 */
 	public function footer_scripts__hook(): void {
 		$html_footer = extract_js( get_custom_post_option_content( 'html_footer', true ) );
-		if ( $html_footer && ! light_house() ) {
+		if ( $html_footer && ! lighthouse() ) {
 			echo js_minify( $html_footer, true );
 		}
 	}
@@ -73,7 +73,7 @@ final class Custom_Script {
 	 */
 	public function body_scripts_bottom__hook(): void {
 		$html_body_bottom = extract_js( get_custom_post_option_content( 'html_body_bottom', true ) );
-		if ( $html_body_bottom && ! light_house() ) {
+		if ( $html_body_bottom && ! lighthouse() ) {
 			echo js_minify( $html_body_bottom, true );
 		}
 	}

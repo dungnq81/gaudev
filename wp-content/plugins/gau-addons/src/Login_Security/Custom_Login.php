@@ -25,13 +25,13 @@ final class Custom_Login {
 	 */
 	public function login_ips_access() {
 		$_login_security          = filter_setting_options( 'login_security', false );
-		$_custom_security_options = get_option( 'login_security__options', false );
+		$_custom_security_options = get_option( 'login_security__options' );
 
 		$custom_restrict_ips = $_custom_security_options['login_ips_access'] ?? [];
 		$custom_blocked_ips  = $_custom_security_options['disable_ips_access'] ?? [];
 
-		$allowed_ips = ( ! empty( $_login_security['allowlist_ips_login_access'] ) ) ? array_filter( array_merge( $_login_security['allowlist_ips_login_access'], (array) $custom_restrict_ips ) ) : (array) $custom_restrict_ips;
-		$blocked_ips = ( ! empty( $_login_security['blocked_ips_login_access'] ) ) ? array_filter( array_merge( $_login_security['blocked_ips_login_access'], (array) $custom_blocked_ips ) ) : (array) $custom_blocked_ips;
+		$allowed_ips = ( ! empty( $_login_security['allowlist_ips_login_access'] ) ) ? array_filter( array_merge( $_login_security['allowlist_ips_login_access'], (array) $custom_restrict_ips ) ) : array_filter( (array) $custom_restrict_ips );
+		$blocked_ips = ( ! empty( $_login_security['blocked_ips_login_access'] ) ) ? array_filter( array_merge( $_login_security['blocked_ips_login_access'], (array) $custom_blocked_ips ) ) : array_filter( (array) $custom_blocked_ips );
 
 		unset( $custom_restrict_ips, $custom_blocked_ips );
 

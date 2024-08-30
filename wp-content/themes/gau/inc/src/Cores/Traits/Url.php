@@ -17,12 +17,8 @@ trait Url {
 	 * @return true|void
 	 */
 	public static function redirect( string $uri = '', int $status = 301 ) {
-		if ( ! preg_match( '#^(\w+:)?//#', $uri ) ) {
-			$uri = self::home( $uri );
-		}
-
 		if ( ! headers_sent() ) {
-			wp_safe_redirect( $uri, $status );
+			wp_redirect( $uri, $status );
 		} else {
 			echo '<script>window.location.href="' . $uri . '";</script>';
 			echo '<noscript><meta http-equiv="refresh" content="0;url=' . $uri . '" /></noscript>';
@@ -188,13 +184,13 @@ trait Url {
 	 */
 	public static function getIpAddress(): string {
 		if ( class_exists( 'Whip' ) ) {
-			$whip          = new Whip( Whip::CLOUDFLARE_HEADERS | Whip::REMOTE_ADDR | Whip::PROXY_HEADERS | Whip::INCAPSULA_HEADERS );
-			$clientAddress = $whip->getValidIpAddress();
+			$clientAddress = ( new Whip( Whip::ALL_METHODS ) )->getValidIpAddress();
 
 			if ( false !== $clientAddress ) {
 				return preg_replace( '/^::1$/', '127.0.0.1', $clientAddress );
 			}
 		} else {
+
 			// Check CloudFlare headers
 			if ( isset( $_SERVER["HTTP_CF_CONNECTING_IP"] ) ) {
 				return $_SERVER["HTTP_CF_CONNECTING_IP"];

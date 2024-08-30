@@ -490,7 +490,7 @@ function __theme_setting_options( array $arr ): array {
 		],
 
 		// Aspect Ratio default.
-		'aspect_ratio_css'                  => [
+		'aspect_ratio_default'              => [
 			'1-1',
 			'2-1',
 			'3-2',
@@ -543,6 +543,7 @@ function __theme_setting_options( array $arr ): array {
 			'wp_mail_smtp_pro' => 'wp-mail-smtp-pro/wp_mail_smtp.php',
 			'smtp_mailer'      => 'smtp-mailer/main.php',
 			'gmail_smtp'       => 'gmail-smtp/main.php',
+			'fluent-smtp'      => 'fluent-smtp/fluent-smtp.php',
 		],
 
 		//
@@ -553,7 +554,7 @@ function __theme_setting_options( array $arr ): array {
 
 		// Custom Email list.
 		'custom_emails'                     => [
-			'custom_contact' => __( 'Contact', TEXT_DOMAIN )
+			'custom_contact' => __( 'Contact', TEXT_DOMAIN ),
 		],
 
 		// lazy_load_exclude.

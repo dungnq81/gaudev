@@ -14,7 +14,7 @@ use enshrined\svgSanitize\Sanitizer;
  * SVG support in WordPress
  *
  * @author ShortPixel
- * Modified by HD Team
+ * Modified by Gaudev
  */
 final class SVG {
 

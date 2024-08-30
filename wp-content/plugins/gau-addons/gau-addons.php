@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Gau Addons
- * Plugin URI: https://webhd.vn
- * Version: 0.24.7
+ * Plugin URI: https://gaudev.xyz
+ * Version: 0.24.8
  * Requires PHP: 8.2
- * Author: Gaudev Team
- * Author URI: https://webhd.vn
+ * Author: Gaudev
+ * Author URI: https://gaudev.xyz
  * Text Domain: gau-addons
- * Description: Addons plugin for Gaudev Theme
+ * Description: Addons plugin for Gau Theme
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: advanced-custom-fields-pro

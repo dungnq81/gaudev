@@ -249,7 +249,6 @@ final class SMTP {
 		 * @param string $from_name Name associated with the "from" email address.
 		 *
 		 * @since 2.3.0
-		 *
 		 */
 		$from_name = apply_filters( 'wp_mail_from_name', $from_name );
 
