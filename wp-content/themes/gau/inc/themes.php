@@ -575,8 +575,8 @@ function __theme_setting_options( array $arr ): array {
 		// Login security
 		'login_security'                    => [
 
-			// Custom admin-login URL.
-			'custom_login_url'            => '',
+			// Custom admin-login URI.
+			'custom_login_uri'            => '',
 
 			// Allows customization of the Login URL in the admin options.
 			'enable_custom_login_options' => false,
