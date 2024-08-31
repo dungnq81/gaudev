@@ -290,7 +290,7 @@ final class Option_Page {
 		$disable_ips_access = is_array( $disable_ips_access ) ? array_map( 'sanitize_text_field', $disable_ips_access ) : sanitize_text_field( $disable_ips_access );
 
 		$login_security__options = [
-			'custom_login_url'          => ! empty( $data['custom_login_url'] ) ? sanitize_text_field( $data['custom_login_url'] ) : '',
+			'custom_login_uri'          => ! empty( $data['custom_login_uri'] ) ? sanitize_text_field( $data['custom_login_uri'] ) : '',
 			'illegal_users'             => ! empty( $data['illegal_users'] ) ? sanitize_text_field( $data['illegal_users'] ) : '',
 			'login_ips_access'          => $login_ips_access,
 			'disable_ips_access'        => $disable_ips_access,

@@ -6,7 +6,8 @@ use Addons\Login_Security\Login_Attempts;
 
 $login_security_options = get_option( 'login_security__options' );
 
-$custom_login_url          = $login_security_options['custom_login_url'] ?? '';
+$custom_login_uri          = $login_security_options['custom_login_uri'] ?? '';
+
 $login_ips_access          = $login_security_options['login_ips_access'] ?? '';
 $disable_ips_access        = $login_security_options['disable_ips_access'] ?? '';
 $two_factor_authentication = $login_security_options['two_factor_authentication'] ?? '';
@@ -19,23 +20,27 @@ $login_security_default = filter_setting_options( 'login_security', false );
 if ( $login_security_default['enable_custom_login_options'] ) :
 
 ?>
-<div class="section section-text !hidden" id="section_custom_login_url">
-	<label class="heading" for="custom_login_url"><?php _e( 'Custom Login URL', ADDONS_TEXT_DOMAIN ); ?></label>
+<div class="section section-text" id="section_custom_login_uri">
+	<label class="heading" for="custom_login_uri"><?php _e( 'Custom Login URL', ADDONS_TEXT_DOMAIN ); ?></label>
     <div class="desc"><?php _e( 'Attackers frequently target <b>/wp-admin</b> or <b>/wp-login.php</b> as the default login URL for WordPress. Changing it can help prevent these attacks and provide a more memorable login URL.', ADDONS_TEXT_DOMAIN ); ?></div>
 	<div class="option">
-		<div class="controls control-prefix">
+		<div class="controls control-prefix" style="height: unset;">
             <div class="prefix">
                 <span class="input-txt" title="<?= esc_attr( esc_url( network_home_url( '/' ) ) )?>"><?=esc_url( network_home_url( '/' ) )?></span>
             </div>
             <?php
 
-            $default_login = 'wp-login.php';
-            if ( ! empty( $login_security_default['custom_login_url'] ) ) {
-                $default_login = $login_security_default['custom_login_url'];
+            // Default URI
+            if ( ! $custom_login_uri ) {
+	            $custom_login_uri = 'wp-login.php';
+
+	            if ( ! empty( $login_security_default['custom_login_uri'] ) ) {
+		            $custom_login_uri = $login_security_default['custom_login_uri'];
+	            }
             }
 
             ?>
-			<input disabled value="<?php echo esc_attr( $custom_login_url ); ?>" class="input" type="text" id="custom_login_url" name="custom_login_url" placeholder="<?=esc_attr( $default_login )?>">
+			<input value="<?php echo esc_attr( $custom_login_uri ); ?>" class="input" type="text" id="custom_login_uri" name="custom_login_uri" placeholder="<?=esc_attr( $custom_login_uri )?>">
 		</div>
 	</div>
 </div>

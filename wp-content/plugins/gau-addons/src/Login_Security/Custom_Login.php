@@ -7,13 +7,12 @@ use Addons\Base\Singleton;
 \defined( 'ABSPATH' ) || die;
 
 final class Custom_Login {
-
 	use Singleton;
 
 	// --------------------------------------------------
 
 	private function init(): void {
-		add_action( 'login_init', [ &$this, 'login_ips_access' ], PHP_INT_MIN );
+		add_action( 'login_init', [ &$this, 'restrict_login_to_ips' ], PHP_INT_MIN );
 	}
 
 	// --------------------------------------------------
@@ -23,7 +22,7 @@ final class Custom_Login {
 	 *
 	 * @return true|void
 	 */
-	public function login_ips_access() {
+	public function restrict_login_to_ips() {
 		$_login_security          = filter_setting_options( 'login_security', false );
 		$_custom_security_options = get_option( 'login_security__options' );
 
